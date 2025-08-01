@@ -1,61 +1,108 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Skeleton – Project Overview
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is a reusable **Laravel skeleton** designed to serve as a solid foundation for building clean, modular, and scalable Laravel APIs. It applies modern design patterns, architecture principles, and a curated set of packages.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🧱 Architecture & Design Principles
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Action Pattern** (via [Laravel Actions](https://github.com/lorisleiva/laravel-actions))
+  - All business logic lives in **Action classes**.
+  - Two categories:
+    - **Endpoint Actions**
+      - Used to serve public API requests.
+      - Located in `app/Http/Endpoints`
+      - Follow the naming convention: `CreateUserEndpoint`, `LoginUserEndpoint`
+    - **Internal Actions**
+      - Used for non-endpoint business logic (e.g., image processing, data updates).
+      - Located in `app/Actions`
+      - Follow the naming convention: `UpdateProfileImage`, `SyncRoles`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Routes**
+  - API routes are defined in `routes/api.php`
+  - Routes are RESTful, structured around resources (e.g., `/api/users`, `/api/orders`).
+  - Each route delegates to a single Endpoint Action, often following the REST method-to-action naming convention.
 
-## Learning Laravel
+## 🧩 Example: Users Resource
+```php
+use Illuminate\Support\Facades\Route;
+use App\Http\Endpoints\Users\{
+    GetUsersEndpoint,
+    GetUserEndpoint,
+    CreateUserEndpoint,
+    UpdateUserEndpoint,
+    DeleteUserEndpoint
+};
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Route::prefix('users')->group(function () {
+    Route::get('/', GetUsersEndpoint::class);          // index
+    Route::get('/{id}', GetUserEndpoint::class);       // show
+    Route::post('/', CreateUserEndpoint::class);       // store
+    Route::put('/{id}', UpdateUserEndpoint::class);    // update
+    Route::delete('/{id}', DeleteUserEndpoint::class); // destroy
+});
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Service Layer**
+  - Located in `app/Services`
+  - For interacting with external services, APIs, or microservices.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Form Requests & Custom Validation Rules**
+  - Located in `app/Http/Requests` and `app/Rules`
+  - Standardized validation flow using Laravel’s `FormRequest`.
 
-## Laravel Sponsors
+- **Enum Usage**
+  - Located in `app/Enums`
+  - For type-safe representation of status, roles, types, etc.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 📦 Core Packages
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- [`lorisleiva/laravel-actions`](https://github.com/lorisleiva/laravel-actions) – Structuring business logic into reusable actions.
+- [`filamentphp/filament`](https://github.com/laravel/passport) – Admin panel and form builder powered by Livewire (great for internal tools and dashboards).
+- [`laravel/passport`](https://github.com/laravel/passport) – OAuth2 server implementation for API authentication.
+- [`spatie/laravel-data`](https://github.com/spatie/laravel-data) – Typed DTOs & transformers.
+- [`spatie/laravel-health`](https://github.com/spatie/laravel-health) – Health and system checks for your application.
+- [`laravel/pint`](https://github.com/laravel/pint) – Opinionated code style formatting.
+- [`barryvdh/laravel-ide-helper`](https://github.com/barryvdh/laravel-ide-helper) – IDE autocompletion for models, facades etc.
+- [`wulfheart/laravel-actions-ide-helper`](https://github.com/Wulfheart/laravel-actions-ide-helper) – IDE autocompletion for actions.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## ✅ Testing & Quality
+- **Pest** – Robust Unit/Integration/E2E testing Framework.
+- **Mockery** – Dependency mocking in unit tests.
+- **Factories** – Used for seeding data for testing.
+- **Laravel Pint** – Enforces consistent coding style.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 📂 Project Structure
 
-## Security Vulnerabilities
+```bash
+app/
+├── Actions/                # Non-endpoint internal actions
+│   └── Profile/
+│       └── UpdateProfileImage.php
+│
+├── Http/
+│   ├── Endpoints/          # Endpoint-serving actions
+│   │   └── User/
+│   │       └── CreateUserEndpoint.php
+│   ├── Requests/           # FormRequest validation
+│
+├── Services/               # External API or microservice integrations
+│   └── ImageService.php
+│
+├── Enums/                  # Enum classes
+│   └── UserStatus.php
+│
+├── Rules/                  # Custom validation rules
+│   └── ValidSaudiPhoneNumber.php
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🚀 Goal
+The primary goal is to enable rapid development of robust, modular, and testable Laravel applications, with clear separation of responsibilities and modern PHP practices.
