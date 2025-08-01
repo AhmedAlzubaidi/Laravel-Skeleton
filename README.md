@@ -62,7 +62,6 @@ Route::prefix('users')->group(function () {
 - [`lorisleiva/laravel-actions`](https://github.com/lorisleiva/laravel-actions) – Structuring business logic into reusable actions.
 - [`filamentphp/filament`](https://github.com/laravel/passport) – Admin panel and form builder powered by Livewire (great for internal tools and dashboards).
 - [`laravel/passport`](https://github.com/laravel/passport) – OAuth2 server implementation for API authentication.
-- [`spatie/laravel-data`](https://github.com/spatie/laravel-data) – Typed DTOs & transformers.
 - [`spatie/laravel-health`](https://github.com/spatie/laravel-health) – Health and system checks for your application.
 - [`laravel/pint`](https://github.com/laravel/pint) – Opinionated code style formatting.
 - [`barryvdh/laravel-ide-helper`](https://github.com/barryvdh/laravel-ide-helper) – IDE autocompletion for models, facades etc.
