@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.10.1",
         "lorisleiva/laravel-actions": "^2.9",
         "spatie/laravel-data": "^4.17",
+        "spatie/laravel-health": "^1.34",
         "spatie/laravel-permission": "^6.21",
         "spatie/laravel-typescript-transformer": "^2.5"
     },
