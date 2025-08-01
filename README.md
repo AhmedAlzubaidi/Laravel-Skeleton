@@ -1,6 +1,6 @@
 # Laravel Skeleton – Project Overview
 
-This project is a reusable **Laravel skeleton** designed to serve as a solid foundation for building clean, modular, and scalable Laravel APIs. It applies modern design patterns, architecture principles, and a curated set of packages.
+This project is a reusable **Laravel Skeleton** designed to serve as a solid foundation for building clean, modular, and scalable Laravel APIs. It applies modern design patterns, architecture principles, and a curated set of packages.
 
 ---
 
@@ -8,15 +8,36 @@ This project is a reusable **Laravel skeleton** designed to serve as a solid fou
 
 - **Action Pattern** (via [Laravel Actions](https://github.com/lorisleiva/laravel-actions))
   - All business logic lives in **Action classes**.
+  - Located in `app/Actions`
   - Two categories:
     - **Endpoint Actions**
       - Used to serve public API requests.
-      - Located in `app/Http/Endpoints`
       - Follow the naming convention: `CreateUserEndpoint`, `LoginUserEndpoint`
     - **Internal Actions**
       - Used for non-endpoint business logic (e.g., image processing, data updates).
-      - Located in `app/Actions`
       - Follow the naming convention: `UpdateProfileImage`, `SyncRoles`
+
+## 🧩 Example: UpdateUserEndpoint
+```php
+namespace App\Actions;
+
+use Lorisleiva\Actions\Concerns\AsAction;
+use App\DTOs\UserDto;
+
+class UpdateUserEndpoint
+{
+    use AsAction;
+
+    public function handle(UserDto $userDto, int $id): UserDto
+    {
+        Gate::authorize('update', request()->user());
+
+        $user = User::findOrFail($id);
+        $user->update($userDto->toArray());
+        return $userDto;
+    }
+}
+```
 
 - **Routes**
   - API routes are defined in `routes/api.php`
@@ -47,9 +68,9 @@ Route::prefix('users')->group(function () {
   - Located in `app/Services`
   - For interacting with external services, APIs, or microservices.
 
-- **Form Requests & Custom Validation Rules**
-  - Located in `app/Http/Requests` and `app/Rules`
-  - Standardized validation flow using Laravel’s `FormRequest`.
+- **DTOs & Custom Validation Rules**
+  - Located in `app/DTOs` and `app/Rules`
+  - Standardized validation flow using Spatie’s `Laravel Data`.
 
 - **Enum Usage**
   - Located in `app/Enums`
@@ -62,6 +83,7 @@ Route::prefix('users')->group(function () {
 - [`lorisleiva/laravel-actions`](https://github.com/lorisleiva/laravel-actions) – Structuring business logic into reusable actions.
 - [`filamentphp/filament`](https://github.com/laravel/passport) – Admin panel and form builder powered by Livewire (great for internal tools and dashboards).
 - [`laravel/passport`](https://github.com/laravel/passport) – OAuth2 server implementation for API authentication.
+- [`spatie/laravel-data`](https://github.com/spatie/laravel-data) – Typed DTOs & transformers.
 - [`spatie/laravel-health`](https://github.com/spatie/laravel-health) – Health and system checks for your application.
 - [`laravel/pint`](https://github.com/laravel/pint) – Opinionated code style formatting.
 - [`barryvdh/laravel-ide-helper`](https://github.com/barryvdh/laravel-ide-helper) – IDE autocompletion for models, facades etc.
@@ -81,23 +103,22 @@ Route::prefix('users')->group(function () {
 
 ```bash
 app/
-├── Actions/                # Non-endpoint internal actions
+├── Actions/
+│   ├── User/
+│   │   └── CreateUserEndpoint.php # Non-endpoint internal actions
 │   └── Profile/
-│       └── UpdateProfileImage.php
+│       └── UpdateProfileImage.php # Endpoint-serving action
 │
-├── Http/
-│   ├── Endpoints/          # Endpoint-serving actions
-│   │   └── User/
-│   │       └── CreateUserEndpoint.php
-│   ├── Requests/           # FormRequest validation
+├── Dtos/......................... # Data transfer objects used as a response and to validate requests
+│   └── UserDto.php
 │
-├── Services/               # External API or microservice integrations
+├── Services/..................... # External API or microservice integrations
 │   └── ImageService.php
 │
-├── Enums/                  # Enum classes
+├── Enums/........................ # Enum classes
 │   └── UserStatus.php
 │
-├── Rules/                  # Custom validation rules
+├── Rules/........................ # Custom validation rules
 │   └── ValidSaudiPhoneNumber.php
 ```
 
