@@ -1,0 +1,105 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\v1;
+
+use App\Commands\CreateUserCommand;
+use App\Commands\UpdateUserCommand;
+use App\DTOs\UserDto;
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Queries\GetUsersQuery;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
+
+final readonly class UserController extends Controller
+{
+    /**
+     * Display a listing of the users.
+     */
+    public function index(GetUsersQuery $query)
+    {
+        Gate::authorize('viewAny', User::class);
+
+        $users = User::query()
+            ->when($query->name, fn ($q, $name) => $q->where('name', 'like', "%{$name}%"))
+            ->when($query->email, fn ($q, $email) => $q->where('email', 'like', "%{$email}%"))
+            ->when($query->status, fn ($q, $status) => $q->where('status', $status))
+            ->get();
+
+        return response()->json([
+            'data' => UserDto::collect($users),
+            'message' => __('Users fetched successfully'),
+        ]);
+    }
+
+    /**
+     * Store a newly created user in storage.
+     */
+    public function store(CreateUserCommand $command)
+    {
+        Gate::authorize('create', User::class);
+        $user = User::create($command->toArray());
+
+        return response()->json([
+            'data' => UserDto::from($user),
+            'message' => __('User created successfully'),
+        ], 201);
+    }
+
+    /**
+     * Display the specified user.
+     */
+    public function show(int $id)
+    {
+        $user = User::findOrFail($id);
+        Gate::authorize('view', $user);
+
+        return response()->json([
+            'data' => UserDto::from($user),
+            'message' => __('User fetched successfully'),
+        ]);
+    }
+
+    /**
+     * Update the specified user in storage.
+     */
+    public function update(UpdateUserCommand $command, int $id)
+    {
+        $user = User::findOrFail($id);
+        Gate::authorize('update', $user);
+
+        $commandData = $command->toArray();
+
+        // Only update password if it's provided
+        if (isset($commandData['password']) && $commandData['password']) {
+            $commandData['password'] = Hash::make($commandData['password']);
+        } else {
+            unset($commandData['password']);
+        }
+
+        $user->update($commandData);
+
+        return response()->json([
+            'data' => UserDto::from($user),
+            'message' => __('User updated successfully'),
+        ]);
+    }
+
+    /**
+     * Remove the specified user from storage.
+     */
+    public function destroy(int $id)
+    {
+        $user = User::findOrFail($id);
+        Gate::authorize('delete', $user);
+
+        $user->delete();
+
+        return response()->json([
+            'data' => UserDto::from($user),
+            'message' => __('User deleted successfully'),
+        ]);
+    }
+}

@@ -22787,269 +22787,66 @@ namespace Illuminate\Support\Facades {
             }
     }
 
-namespace Lorisleiva\Actions\Facades {
+namespace Spatie\Health\Facades {
     /**
-     * @see ActionManager
+     * @mixin \Spatie\Health\Health
      */
-    class Actions {
+    class Health {
         /**
-         * @param class-string<JobDecorator> $jobDecoratorClass
+         * @param array<int, Check> $checks
          * @static
          */
-        public static function useJobDecorator($jobDecoratorClass)
+        public static function checks($checks)
         {
-            return \Lorisleiva\Actions\ActionManager::useJobDecorator($jobDecoratorClass);
-        }
-
-        /**
-         * @param class-string<JobDecorator&ShouldBeUnique> $uniqueJobDecoratorClass
-         * @static
-         */
-        public static function useUniqueJobDecorator($uniqueJobDecoratorClass)
-        {
-            return \Lorisleiva\Actions\ActionManager::useUniqueJobDecorator($uniqueJobDecoratorClass);
+            /** @var \Spatie\Health\Health $instance */
+            return $instance->checks($checks);
         }
 
         /**
          * @static
          */
-        public static function setBacktraceLimit($backtraceLimit)
+        public static function clearChecks()
         {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->setBacktraceLimit($backtraceLimit);
+            /** @var \Spatie\Health\Health $instance */
+            return $instance->clearChecks();
+        }
+
+        /**
+         * @return Collection<int, Check>
+         * @static
+         */
+        public static function registeredChecks()
+        {
+            /** @var \Spatie\Health\Health $instance */
+            return $instance->registeredChecks();
+        }
+
+        /**
+         * @return Collection<int, ResultStore>
+         * @static
+         */
+        public static function resultStores()
+        {
+            /** @var \Spatie\Health\Health $instance */
+            return $instance->resultStores();
         }
 
         /**
          * @static
          */
-        public static function setDesignPatterns($designPatterns)
+        public static function inlineStylesheet($stylesheet)
         {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->setDesignPatterns($designPatterns);
+            /** @var \Spatie\Health\Health $instance */
+            return $instance->inlineStylesheet($stylesheet);
         }
 
         /**
          * @static
          */
-        public static function getDesignPatterns()
+        public static function assets()
         {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->getDesignPatterns();
-        }
-
-        /**
-         * @static
-         */
-        public static function registerDesignPattern($designPattern)
-        {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->registerDesignPattern($designPattern);
-        }
-
-        /**
-         * @static
-         */
-        public static function getDesignPatternsMatching($usedTraits)
-        {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->getDesignPatternsMatching($usedTraits);
-        }
-
-        /**
-         * @static
-         */
-        public static function extend($app, $abstract)
-        {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->extend($app, $abstract);
-        }
-
-        /**
-         * @static
-         */
-        public static function isExtending($abstract)
-        {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->isExtending($abstract);
-        }
-
-        /**
-         * @static
-         */
-        public static function shouldExtend($abstract)
-        {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->shouldExtend($abstract);
-        }
-
-        /**
-         * @static
-         */
-        public static function identifyAndDecorate($instance)
-        {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->identifyAndDecorate($instance);
-        }
-
-        /**
-         * @static
-         */
-        public static function identifyFromBacktrace($usedTraits, $frame = null)
-        {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->identifyFromBacktrace($usedTraits, $frame);
-        }
-
-        /**
-         * @static
-         */
-        public static function registerRoutes($paths = 'app/Actions')
-        {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->registerRoutes($paths);
-        }
-
-        /**
-         * @static
-         */
-        public static function registerCommands($paths = 'app/Actions')
-        {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->registerCommands($paths);
-        }
-
-        /**
-         * @static
-         */
-        public static function registerRoutesForAction($className)
-        {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->registerRoutesForAction($className);
-        }
-
-        /**
-         * @static
-         */
-        public static function registerCommandsForAction($className)
-        {
-            /** @var \Lorisleiva\Actions\ActionManager $instance */
-            return $instance->registerCommandsForAction($className);
-        }
-
-            }
-    }
-
-namespace Lorisleiva\Lody {
-    /**
-     * @see LodyManager
-     */
-    class Lody {
-        /**
-         * @static
-         */
-        public static function classes($paths, $recursive = true)
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->classes($paths, $recursive);
-        }
-
-        /**
-         * @static
-         */
-        public static function classesFromFinder($finder)
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->classesFromFinder($finder);
-        }
-
-        /**
-         * @static
-         */
-        public static function files($paths, $recursive = true, $hidden = false)
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->files($paths, $recursive, $hidden);
-        }
-
-        /**
-         * @static
-         */
-        public static function filesFromFinder($finder)
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->filesFromFinder($finder);
-        }
-
-        /**
-         * @static
-         */
-        public static function resolvePathUsing($callback)
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->resolvePathUsing($callback);
-        }
-
-        /**
-         * @static
-         */
-        public static function resolvePath($path)
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->resolvePath($path);
-        }
-
-        /**
-         * @static
-         */
-        public static function resolveClassnameUsing($callback)
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->resolveClassnameUsing($callback);
-        }
-
-        /**
-         * @static
-         */
-        public static function resolveClassname($file)
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->resolveClassname($file);
-        }
-
-        /**
-         * @static
-         */
-        public static function setBasePath($basePath)
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->setBasePath($basePath);
-        }
-
-        /**
-         * @static
-         */
-        public static function getBasePath($path = '')
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->getBasePath($path);
-        }
-
-        /**
-         * @static
-         */
-        public static function setAutoloadPath($autoloadPath)
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->setAutoloadPath($autoloadPath);
-        }
-
-        /**
-         * @static
-         */
-        public static function getAutoloadPath()
-        {
-            /** @var \Lorisleiva\Lody\LodyManager $instance */
-            return $instance->getAutoloadPath();
+            /** @var \Spatie\Health\Health $instance */
+            return $instance->assets();
         }
 
             }
@@ -23120,6 +22917,33 @@ namespace Illuminate\Http {
         public static function hasValidRelativeSignatureWhileIgnoring($ignoreQuery = [])
         {
             return \Illuminate\Http\Request::hasValidRelativeSignatureWhileIgnoring($ignoreQuery);
+        }
+
+            }
+    }
+
+namespace Illuminate\Routing {
+    /**
+     */
+    class Route {
+        /**
+         * @see \Spatie\Permission\PermissionServiceProvider::registerMacroHelpers()
+         * @param mixed $roles
+         * @static
+         */
+        public static function role($roles = [])
+        {
+            return \Illuminate\Routing\Route::role($roles);
+        }
+
+        /**
+         * @see \Spatie\Permission\PermissionServiceProvider::registerMacroHelpers()
+         * @param mixed $permissions
+         * @static
+         */
+        public static function permission($permissions = [])
+        {
+            return \Illuminate\Routing\Route::permission($permissions);
         }
 
             }
@@ -27985,8 +27809,7 @@ namespace  {
     class Validator extends \Illuminate\Support\Facades\Validator {}
     class View extends \Illuminate\Support\Facades\View {}
     class Vite extends \Illuminate\Support\Facades\Vite {}
-    class Action extends \Lorisleiva\Actions\Facades\Actions {}
-    class Lody extends \Lorisleiva\Lody\Lody {}
+    class Health extends \Spatie\Health\Facades\Health {}
 }
 
 
