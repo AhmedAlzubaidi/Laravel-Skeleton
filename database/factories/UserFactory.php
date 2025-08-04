@@ -17,7 +17,7 @@ final class UserFactory extends Factory
     /**
      * The current password being used by the factory.
      */
-    protected static ?string $password;
+    private static ?string $password = null;
 
     /**
      * Define the model's default state.
@@ -41,7 +41,7 @@ final class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'email_verified_at' => null,
         ]);
     }
@@ -51,7 +51,7 @@ final class UserFactory extends Factory
      */
     public function inactive(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => UserStatus::INACTIVE,
         ]);
     }
@@ -61,7 +61,7 @@ final class UserFactory extends Factory
      */
     public function suspended(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => UserStatus::SUSPENDED,
         ]);
     }
@@ -71,7 +71,7 @@ final class UserFactory extends Factory
      */
     public function pending(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => UserStatus::PENDING,
         ]);
     }
