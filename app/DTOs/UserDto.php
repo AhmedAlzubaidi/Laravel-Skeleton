@@ -7,7 +7,7 @@ namespace App\DTOs;
 use App\Enums\UserStatus;
 use Spatie\LaravelData\Data;
 
-class UserDto extends Data
+final class UserDto extends Data
 {
     /**
      * @param  int  $id  The user's unique identifier

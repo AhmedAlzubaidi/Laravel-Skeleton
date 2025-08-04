@@ -16,7 +16,7 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @mixin IdeHelperUser
  */
-class User extends Authenticatable implements OAuthenticatable
+final class User extends Authenticatable implements OAuthenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, Notifiable;

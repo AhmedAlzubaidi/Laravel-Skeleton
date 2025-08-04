@@ -12,6 +12,16 @@ enum UserStatus: string
     case PENDING = 'pending';
 
     /**
+     * Get all the values of the enum cases.
+     *
+     * @return array<string>
+     */
+    public static function values(): array
+    {
+        return array_map(fn (UserStatus $status) => $status->value, self::cases());
+    }
+
+    /**
      * Get the label of the enum case.
      */
     public function label(): string
@@ -35,15 +45,5 @@ enum UserStatus: string
             self::SUSPENDED => 'red',
             self::PENDING => 'yellow',
         };
-    }
-
-    /**
-     * Get all the values of the enum cases.
-     *
-     * @return array<string>
-     */
-    public static function values(): array
-    {
-        return array_map(fn (UserStatus $status) => $status->value, UserStatus::cases());
     }
 }

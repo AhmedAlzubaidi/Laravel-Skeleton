@@ -8,7 +8,7 @@ use App\Enums\UserStatus;
 use Illuminate\Validation\Rules\Enum;
 use Spatie\LaravelData\Data;
 
-class GetUsersQuery extends Data
+final class GetUsersQuery extends Data
 {
     /**
      * @param  string|null  $name  The name of the user to search for

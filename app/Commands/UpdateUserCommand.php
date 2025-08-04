@@ -8,7 +8,7 @@ use App\Enums\UserStatus;
 use Illuminate\Validation\Rules\Enum;
 use Spatie\LaravelData\Data;
 
-class UpdateUserCommand extends Data
+final class UpdateUserCommand extends Data
 {
     /**
      * Create a new User instance.
