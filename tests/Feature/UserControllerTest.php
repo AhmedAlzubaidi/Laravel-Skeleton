@@ -40,6 +40,9 @@ describe('User Controller - Admin Users', function () {
                             'status',
                         ],
                     ],
+                    'current_page',
+                    'per_page',
+                    'total',
                     'message',
                 ]);
         });
@@ -52,7 +55,14 @@ describe('User Controller - Admin Users', function () {
 
             $response->assertStatus(200)
                 ->assertJsonCount(1, 'data')
-                ->assertJsonPath('data.0.name', 'Unique John Doe');
+                ->assertJsonPath('data.0.name', 'Unique John Doe')
+                ->assertJsonStructure([
+                    'data',
+                    'current_page',
+                    'per_page',
+                    'total',
+                    'message',
+                ]);
         });
 
         it('allows admin to filter users by email', function () {
@@ -63,7 +73,14 @@ describe('User Controller - Admin Users', function () {
 
             $response->assertStatus(200)
                 ->assertJsonCount(1, 'data')
-                ->assertJsonPath('data.0.email', 'john@example.com');
+                ->assertJsonPath('data.0.email', 'john@example.com')
+                ->assertJsonStructure([
+                    'data',
+                    'current_page',
+                    'per_page',
+                    'total',
+                    'message',
+                ]);
         });
 
         it('allows admin to filter users by status', function () {
@@ -73,8 +90,46 @@ describe('User Controller - Admin Users', function () {
             $response = $this->getJson('/api/users?status='.UserStatus::ACTIVE->value);
 
             $response->assertStatus(200)
-                ->assertJsonCount(12, 'data') // 10 from UserSeeder + 1 admin + 1 from test
-                ->assertJsonPath('data.0.status', UserStatus::ACTIVE->value);
+                ->assertJsonPath('total', 12) // 10 from UserSeeder + 1 admin + 1 from test
+                ->assertJsonPath('data.0.status', UserStatus::ACTIVE->value)
+                ->assertJsonStructure([
+                    'data',
+                    'current_page',
+                    'per_page',
+                    'total',
+                    'message',
+                ]);
+        });
+
+        it('supports pagination parameters', function () {
+            User::factory()->count(15)->create();
+
+            $response = $this->getJson('/api/users?per_page=5&page=2');
+
+            $response->assertStatus(200)
+                ->assertJsonPath('current_page', 2)
+                ->assertJsonPath('per_page', 5)
+                ->assertJsonStructure([
+                    'data',
+                    'current_page',
+                    'per_page',
+                    'total',
+                    'message',
+                ]);
+        });
+
+        it('validates pagination parameters', function () {
+            $response = $this->getJson('/api/users?per_page=0');
+
+            $response->assertStatus(422);
+
+            $response = $this->getJson('/api/users?per_page=101');
+
+            $response->assertStatus(422);
+
+            $response = $this->getJson('/api/users?page=0');
+
+            $response->assertStatus(422);
         });
     });
 

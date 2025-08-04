@@ -14,11 +14,15 @@ final class GetUsersQuery extends Data
      * @param  string|null  $name  The name of the user to search for
      * @param  string|null  $email  The email of the user to search for
      * @param  UserStatus|null  $status  The status of the user to search for
+     * @param  int|null  $per_page  Number of items per page (default: 10)
+     * @param  int|null  $page  Page number (default: 1)
      */
     public function __construct(
         public ?string $name,
         public ?string $email,
         public ?UserStatus $status,
+        public ?int $per_page = 10,
+        public ?int $page = 1,
     ) {}
 
     /**
@@ -32,6 +36,8 @@ final class GetUsersQuery extends Data
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'email' => ['sometimes', 'required', 'email', 'exists:users,email'],
             'status' => ['sometimes', 'required', new Enum(UserStatus::class)],
+            'per_page' => ['sometimes', 'required', 'integer', 'min:1', 'max:100'],
+            'page' => ['sometimes', 'required', 'integer', 'min:1'],
         ];
     }
 }

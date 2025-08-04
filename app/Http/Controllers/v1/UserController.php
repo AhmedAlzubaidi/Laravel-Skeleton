@@ -29,7 +29,7 @@ final readonly class UserController extends Controller
             ->when($query->name, fn (Builder $q, string $name): Builder => $q->where('name', 'like', "%{$name}%"))
             ->when($query->email, fn (Builder $q, string $email): Builder => $q->where('email', 'like', "%{$email}%"))
             ->when($query->status, fn (Builder $q, UserStatus $status): Builder => $q->where('status', $status))
-            ->paginate(10);
+            ->paginate($query->per_page ?? 10, ['*'], 'page', $query->page ?? 1);
 
         return response()->json([
             ...UserDto::collect($users)->toArray(),
