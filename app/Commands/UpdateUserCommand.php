@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Commands;
 
 use App\Enums\UserStatus;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Enum;
 use Spatie\LaravelData\Data;
 
@@ -32,7 +33,8 @@ final class UpdateUserCommand extends Data
      */
     public static function rules(): array
     {
-        $userId = request()->route('id');
+        /** @var string $userId */
+        $userId = Route::input('id');
 
         return [
             'name' => ['required', 'string', 'max:255'],

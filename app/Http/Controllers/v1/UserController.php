@@ -43,7 +43,9 @@ final readonly class UserController extends Controller
     public function store(CreateUserCommand $command): JsonResponse
     {
         Gate::authorize('create', User::class);
-        $user = User::create($command->toArray());
+        $commandData = $command->toArray();
+        $commandData['password'] = Hash::make($command->password);
+        $user = User::create($commandData);
 
         return response()->json([
             'data' => UserDto::from($user),
@@ -75,9 +77,8 @@ final readonly class UserController extends Controller
 
         $commandData = $command->toArray();
 
-        // Only update password if it's provided
-        if (isset($commandData['password']) && $commandData['password']) {
-            $commandData['password'] = Hash::make($commandData['password']);
+        if ($command->password) {
+            $commandData['password'] = Hash::make($command->password);
         } else {
             unset($commandData['password']);
         }

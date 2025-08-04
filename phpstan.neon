@@ -3,6 +3,9 @@ includes:
     - vendor/nesbot/carbon/extension.neon
 
 parameters:
+    scanFiles:
+      - _ide_helper_models.php
+      - _ide_helper.php
     paths:
         - app/
     level: max
