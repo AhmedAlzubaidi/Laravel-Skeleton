@@ -77,7 +77,7 @@ final readonly class UserController extends Controller
 
         $commandData = $command->toArray();
 
-        if ($command->password) {
+        if ($command->password !== null && $command->password !== '' && $command->password !== '0') {
             $commandData['password'] = Hash::make($command->password);
         } else {
             unset($commandData['password']);
