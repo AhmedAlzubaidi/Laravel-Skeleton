@@ -22,6 +22,9 @@ use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 final class AdminPanelProvider extends PanelProvider
 {
+    /**
+     * Configure the panel.
+     */
     public function panel(Panel $panel): Panel
     {
         return $panel
