@@ -8,7 +8,6 @@ use App\Commands\CreateUserCommand;
 use App\Commands\UpdateUserCommand;
 use App\DTOs\UserDto;
 use App\Enums\UserStatus;
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Queries\GetUsersQuery;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,7 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
-final readonly class UserController extends Controller
+final readonly class UserController
 {
     /**
      * Display a listing of the users.

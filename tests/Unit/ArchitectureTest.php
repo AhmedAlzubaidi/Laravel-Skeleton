@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 arch()->preset()->php();
+arch()->preset()->strict();
 arch()->preset()->laravel();
 arch()->preset()->security();
 
@@ -15,6 +16,10 @@ arch('strict types')
 arch('no die, dd, dump')
     ->expect('App')
     ->not->toUse(['die', 'dd', 'dump']);
+
+arch('controllers')
+    ->expect('App\Http\Controllers')
+    ->not->toBeUsed();
 
 arch('requests')
     ->expect('App\Http\Requests')
