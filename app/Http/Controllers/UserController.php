@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\v1;
+namespace App\Http\Controllers;
 
 use App\Commands\CreateUserCommand;
 use App\Commands\UpdateUserCommand;
