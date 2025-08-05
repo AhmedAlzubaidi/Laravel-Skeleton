@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 arch()->preset()->php();
 arch()->preset()->strict();
-arch()->preset()->laravel();
+arch()->preset()->laravel()->ignoring([
+    'App\Providers\Filament\AdminPanelProvider',
+]);
 arch()->preset()->security();
 
 arch('strict types')
