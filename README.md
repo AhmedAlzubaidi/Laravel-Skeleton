@@ -42,13 +42,13 @@ php artisan ide-helper:generate
 php artisan ide-helper:models --write-mixin
 
 # Run tests
-php artisan test
-
-# Run tests with coverage (requires Xdebug)
-XDEBUG_MODE=coverage php artisan test --coverage
+composer test
 
 # Format code
-./vendor/bin/pint
+composer lint
+
+# Refactor code
+composer refactor
 
 # Start development server
 php artisan serve
@@ -226,8 +226,8 @@ describe('User Controller - Normal Users', function () {
 ```
 
 ### **Test Coverage**
-- **43 tests** covering all CRUD operations and architecture principles
-- **207 assertions** ensuring comprehensive coverage
+- **94 tests** covering all CRUD operations and architecture principles
+- **381 assertions** ensuring comprehensive coverage
 - **Authorization testing** for both admin and normal users
 - **Validation testing** for all input fields
 - **Error handling** (404, 403, 422 status codes)
