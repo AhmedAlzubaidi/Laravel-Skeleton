@@ -25,6 +25,10 @@
         "no_superfluous_elseif": true,
         "no_useless_else": true,
         "no_multiple_statements_per_line": true,
+        "ordered_imports": {
+            "sort_algorithm": "length",
+            "imports_order": ["class", "function", "const"]
+        },
         "ordered_class_elements": {
             "order": [
                 "use_trait",

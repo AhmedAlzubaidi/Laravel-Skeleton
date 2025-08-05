@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\UserStatus;
+use Laravel\Passport\HasApiTokens;
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\Contracts\OAuthenticatable;
-use Laravel\Passport\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * @mixin IdeHelperUser

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Enums\UserStatus;
 use App\Models\User;
+use App\Enums\UserStatus;
 use Database\Seeders\DatabaseSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 

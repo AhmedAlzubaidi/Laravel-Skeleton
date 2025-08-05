@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Commands;
 
 use App\Enums\UserStatus;
-use Illuminate\Validation\Rules\Enum;
 use Spatie\LaravelData\Data;
+use Illuminate\Validation\Rules\Enum;
 
 final class CreateUserCommand extends Data
 {

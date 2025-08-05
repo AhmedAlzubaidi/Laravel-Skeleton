@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Application;
 
 define('LARAVEL_START', microtime(true));
 

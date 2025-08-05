@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Commands\CreateUserCommand;
-use App\Commands\UpdateUserCommand;
+use App\Models\User;
 use App\DTOs\UserDto;
 use App\Enums\UserStatus;
-use App\Models\User;
 use App\Queries\GetUsersQuery;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use App\Commands\CreateUserCommand;
+use App\Commands\UpdateUserCommand;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Builder;
 
 final readonly class UserController
 {
