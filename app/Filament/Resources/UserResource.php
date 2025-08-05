@@ -1,28 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources;
 
-use App\Enums\UserStatus;
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\Pages\CreateUser;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
 use Filament\Forms;
+use App\Models\User;
+use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
-use Filament\Resources\Resource;
-use Filament\Tables;
+use App\Enums\UserStatus;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\Resource;
 use Spatie\Permission\Models\Role;
+use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\UserResource\Pages\CreateUser;
 
-class UserResource extends Resource
+/** @codeCoverageIgnore */
+final class UserResource extends Resource
 {
+    /**
+     * @var class-string<User>
+     */
     protected static ?string $model = User::class;
 
+    /**
+     * The navigation icon for the resource.
+     */
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    /**
+     * Builds the form for the resource.
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -36,7 +45,7 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('password')
                     ->password()
-                    ->required(fn (Page $livewire) => ($livewire instanceof CreateUser))
+                    ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser))
                     ->maxLength(255),
                 Forms\Components\Select::make('status')
                     ->options(UserStatus::class)
@@ -49,6 +58,9 @@ class UserResource extends Resource
             ]);
     }
 
+    /**
+     * Builds the table for the resource.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -78,6 +90,9 @@ class UserResource extends Resource
             ]);
     }
 
+    /**
+     * @return array<class-string>
+     */
     public static function getRelations(): array
     {
         return [
@@ -85,11 +100,14 @@ class UserResource extends Resource
         ];
     }
 
+    /**
+     * @return array<string, \Filament\Resources\Pages\PageRegistration>
+     */
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
+            'create' => CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
