@@ -8,7 +8,6 @@ use Filament\Actions;
 use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\EditRecord;
 
-/** @codeCoverageIgnore */
 final class EditUser extends EditRecord
 {
     /**

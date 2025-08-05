@@ -8,7 +8,6 @@ use Filament\Actions;
 use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\ListRecords;
 
-/** @codeCoverageIgnore */
 final class ListUsers extends ListRecords
 {
     /**

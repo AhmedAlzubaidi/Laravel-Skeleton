@@ -7,7 +7,6 @@ namespace App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\CreateRecord;
 
-/** @codeCoverageIgnore */
 final class CreateUser extends CreateRecord
 {
     /**

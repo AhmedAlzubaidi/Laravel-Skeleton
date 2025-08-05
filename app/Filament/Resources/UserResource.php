@@ -16,7 +16,6 @@ use Spatie\Permission\Models\Role;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\Pages\CreateUser;
 
-/** @codeCoverageIgnore */
 final class UserResource extends Resource
 {
     /**
