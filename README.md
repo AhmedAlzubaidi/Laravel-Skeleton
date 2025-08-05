@@ -60,7 +60,7 @@ php artisan serve
 <summary><strong>🧱 Architecture & Design Principles</strong></summary>
 
 ### **Controller + Commands/Queries Pattern**
-- **Controllers**: Controllers for business logic
+- **Controllers**: Thin coordination layer for HTTP requests
 - **Commands**: DTOs for write operations (create, update) using Spatie Laravel Data
 - **Queries**: DTOs for read operations (list, show) using Spatie Laravel Data
 - **DTOs**: Data Transfer Objects for responses using Spatie Laravel Data
@@ -71,24 +71,24 @@ php artisan serve
 - **Admin Bypass**: Admins bypass all authorization checks via `Gate::before` callback
 
 ### **Routes**
-- API routes are defined in `routes/api.php`
-- Routes are RESTful, structured around resources (e.g., `/api/users`)
+- API routes are defined in `routes/api.php` with v1 versioning
+- Routes are RESTful, structured around resources (e.g., `/api/v1/users`)
 - Each route delegates to controller methods, which use Commands/Queries for validation
 
 ## 🧩 Example: Users Resource
 ```php
 use App\Http\Controllers\UserController;
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:api')->prefix('v1')->group(function () {
     Route::resource('users', UserController::class)->except(['create', 'edit']);
 });
 ```
 
 ## 🧩 Example: UserController with Commands/Queries
 ```php
-class UserController extends Controller
+final readonly class UserController
 {
-    public function index(GetUsersQuery $query)
+    public function index(GetUsersQuery $query): JsonResponse
     {
         Gate::authorize('viewAny', User::class);
         
@@ -96,19 +96,21 @@ class UserController extends Controller
             ->when($query->name, fn($q, $name) => $q->where('name', 'like', "%{$name}%"))
             ->when($query->email, fn($q, $email) => $q->where('email', 'like', "%{$email}%"))
             ->when($query->status, fn($q, $status) => $q->where('status', $status))
-            ->get();
+            ->paginate($query->per_page ?? 10, ['*'], 'page', $query->page ?? 1);
 
         return response()->json([
-            'data' => UserDto::collect($users),
+            ...UserDto::collect($users)->toArray(),
             'message' => __('Users fetched successfully'),
         ]);
     }
 
-    public function store(CreateUserCommand $command)
+    public function store(CreateUserCommand $command): JsonResponse
     {
         Gate::authorize('create', User::class);
         
-        $user = User::create($command->toArray());
+        $commandData = $command->toArray();
+        $commandData['password'] = Hash::make($command->password);
+        $user = User::create($commandData);
         
         return response()->json([
             'data' => UserDto::from($user),
@@ -127,7 +129,7 @@ class UserController extends Controller
 ## 🧩 Example: DTOs and Commands
 ```php
 // CreateUserCommand - Request validation
-class CreateUserCommand extends Data
+final class CreateUserCommand extends Data
 {
     public function __construct(
         public string $name,
@@ -147,8 +149,31 @@ class CreateUserCommand extends Data
     }
 }
 
+// GetUsersQuery - Request validation with pagination
+final class GetUsersQuery extends Data
+{
+    public function __construct(
+        public ?string $name,
+        public ?string $email,
+        public ?UserStatus $status,
+        public ?int $per_page = 10,
+        public ?int $page = 1,
+    ) {}
+
+    public static function rules(): array
+    {
+        return [
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'email' => ['sometimes', 'required', 'email', 'exists:users,email'],
+            'status' => ['sometimes', 'required', new Enum(UserStatus::class)],
+            'per_page' => ['sometimes', 'required', 'integer', 'min:1', 'max:100'],
+            'page' => ['sometimes', 'required', 'integer', 'min:1'],
+        ];
+    }
+}
+
 // UserDto - Response serialization
-class UserDto extends Data
+final class UserDto extends Data
 {
     public function __construct(
         public int $id,
@@ -177,9 +202,21 @@ class UserDto extends Data
 ### **Development & IDE Support**
 - [`barryvdh/laravel-ide-helper`](https://github.com/barryvdh/laravel-ide-helper) – IDE autocompletion for models, facades etc.
 - [`laravel/pint`](https://github.com/laravel/pint) – Opinionated code style formatting
+- [`rector/rector`](https://github.com/rectorphp/rector) – Automated code refactoring
+
+### **Testing & Quality**
+- [`pestphp/pest`](https://pestphp.com/) – Modern testing framework
+- [`larastan/larastan`](https://github.com/larastan/larastan) – Static analysis for Laravel
+- [`pestphp/pest-plugin-type-coverage`](https://github.com/pestphp/pest-plugin-type-coverage) – Type coverage analysis
 
 ### **Monitoring & Health**
 - [`spatie/laravel-health`](https://github.com/spatie/laravel-health) – Health and system checks
+
+### **Frontend Tools**
+Although this project is primarily intended to serve as an API, I’ve included Prettier just in case — it doesn’t hurt to have clean code. 🙂
+- [`vite`](https://vitejs.dev/) – Frontend build tool
+- [`tailwindcss`](https://tailwindcss.com/) – Utility-first CSS framework
+- [`prettier`](https://prettier.io/) – Code formatter
 
 </details>
 
@@ -228,10 +265,12 @@ describe('User Controller - Normal Users', function () {
 ### **Test Coverage**
 - **94 tests** covering all CRUD operations and architecture principles
 - **381 assertions** ensuring comprehensive coverage
+- **100% type coverage** across all classes
 - **Authorization testing** for both admin and normal users
 - **Validation testing** for all input fields
 - **Error handling** (404, 403, 422 status codes)
 - **Architecture compliance** testing
+- **Unit tests** for UserStatus enum and UserPolicy
 
 </details>
 
@@ -255,8 +294,7 @@ app/
 │
 ├── Http/
 │   ├── Controllers/............... # Thin coordination layer
-│   │   └── v1/
-│   │       └── UserController.php
+│   │   └── UserController.php
 │   └── Policies/.................. # Authorization policies
 │       └── UserPolicy.php
 │
@@ -270,7 +308,10 @@ database/
 ├── factories/..................... # Model factories
 │   └── UserFactory.php
 ├── migrations/.................... # Database migrations
-│   └── *_add_status_to_users_table.php
+│   ├── *_create_users_table.php
+│   ├── *_add_status_to_users_table.php
+│   ├── *_create_permission_tables.php
+│   └── *_create_oauth_*.php
 └── seeders/....................... # Database seeders
     ├── DatabaseSeeder.php
     ├── RoleSeeder.php
@@ -280,7 +321,9 @@ tests/
 ├── Feature/....................... # Feature tests
 │   └── UserControllerTest.php
 └── Unit/.......................... # Unit tests
-    └── ArchitectureTest.php
+    ├── ArchitectureTest.php
+    ├── UserPolicyTest.php
+    └── UserStatusTest.php
 ```
 
 </details>
@@ -321,20 +364,38 @@ class UserPolicy
 - ✅ User status management (Active, Inactive, Suspended, Pending)
 - ✅ Email and password validation
 - ✅ Filtering by name, email, and status
+- ✅ Pagination support (configurable per_page and page parameters)
 
 ### **API Endpoints**
-- `GET /api/users` - List users (admin only)
-- `GET /api/users/{id}` - Show user (own profile or admin)
-- `POST /api/users` - Create user (admin only)
-- `PUT /api/users/{id}` - Update user (own profile or admin)
-- `DELETE /api/users/{id}` - Delete user (admin only)
+- `GET /api/v1/users` - List users with filtering and pagination (admin only)
+- `GET /api/v1/users/{id}` - Show user (own profile or admin)
+- `POST /api/v1/users` - Create user (admin only)
+- `PUT /api/v1/users/{id}` - Update user (own profile or admin)
+- `DELETE /api/v1/users/{id}` - Delete user (admin only)
+- `GET /api/v1/user` - Get current authenticated user
+
+### **Query Parameters**
+- `name` - Filter users by name (partial match)
+- `email` - Filter users by email (exact match)
+- `status` - Filter users by status (Active, Inactive, Suspended, Pending)
+- `per_page` - Number of items per page (1-100, default: 10)
+- `page` - Page number (default: 1)
 
 ### **Testing**
-- ✅ Comprehensive test coverage (43 tests, 207 assertions)
+- ✅ Comprehensive test coverage (94 tests, 381 assertions)
+- ✅ 100% type coverage across all classes
 - ✅ Admin and normal user scenarios
 - ✅ Authorization testing
 - ✅ Validation testing
 - ✅ Error handling testing
 - ✅ Architecture compliance testing
+- ✅ Unit tests for UserStatus enum and UserPolicy
+
+### **Code Quality**
+- ✅ Strict typing throughout the application
+- ✅ Automated code formatting with Laravel Pint
+- ✅ Static analysis with Larastan
+- ✅ Automated refactoring with Rector
+- ✅ Prettier formatting for frontend assets
 
 </details>
