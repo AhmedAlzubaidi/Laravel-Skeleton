@@ -173,7 +173,7 @@ abstract class BaseData extends Data
 final class CreateUserCommand extends BaseData
 {
     public function __construct(
-        public string $name,
+        public string $username,
         public string $email,
         public string $password,
         public UserStatus $status = UserStatus::ACTIVE,
@@ -182,10 +182,18 @@ final class CreateUserCommand extends BaseData
     public static function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'max:255'],
-            'status' => ['sometimes', 'required', new Enum(UserStatus::class)],
+            'username' => ['required', 'string', 'max:40', 'unique:users,username'],
+            'email'    => ['required', 'email', 'unique:users,email'],
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised(), // Checks against data leaks via HaveIBeenPwned
+            ],
+            'status'   => ['sometimes', 'required', new Enum(UserStatus::class)],
         ];
     }
 }
@@ -194,7 +202,7 @@ final class CreateUserCommand extends BaseData
 final class GetUsersQuery extends BaseData
 {
     public function __construct(
-        public ?string $name,
+        public ?string $username,
         public ?string $email,
         public ?UserStatus $status,
         public ?int $per_page = 10,
@@ -204,11 +212,11 @@ final class GetUsersQuery extends BaseData
     public static function rules(): array
     {
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'email' => ['sometimes', 'required', 'email', 'exists:users,email'],
-            'status' => ['sometimes', 'required', new Enum(UserStatus::class)],
+            'username' => ['sometimes', 'required', 'string', 'max:40'],
+            'email'    => ['sometimes', 'required', 'email', 'exists:users,email'],
+            'status'   => ['sometimes', 'required', new Enum(UserStatus::class)],
             'per_page' => ['sometimes', 'required', 'integer', 'min:1', 'max:100'],
-            'page' => ['sometimes', 'required', 'integer', 'min:1'],
+            'page'     => ['sometimes', 'required', 'integer', 'min:1'],
         ];
     }
 }
@@ -218,7 +226,7 @@ final class UserDto extends BaseData
 {
     public function __construct(
         public int $id,
-        public string $name,
+        public string $username,
         public string $email,
         public ?string $password,
         public UserStatus $status,
@@ -307,11 +315,11 @@ describe('User Controller - Normal Users', function () {
 ```
 
 ### **Test Coverage**
-- **90 tests** covering all CRUD operations and architecture principles
-- **369 assertions** ensuring comprehensive coverage
+- **93 tests** covering all CRUD operations and architecture principles
+- **379 assertions** ensuring comprehensive coverage
 - **100% type coverage** across all classes
 - **Authorization testing** for both admin and normal users
-- **Validation testing** for all input fields
+- **Validation testing** for all input fields including password strength and HaveIBeenPwned data leak checks
 - **Error handling** (404, 403, 422 status codes)
 - **Architecture compliance** testing
 - **Unit tests** for UserStatus enum and UserPolicy
@@ -440,7 +448,7 @@ class UserPolicy
 - `GET /api/v1/user` - Get current authenticated user
 
 ### **Query Parameters**
-- `name` - Filter users by name (partial match)
+- `username` - Filter users by username (partial match)
 - `email` - Filter users by email (exact match)
 - `status` - Filter users by status (Active, Inactive, Suspended, Pending)
 - `per_page` - Number of items per page (1-100, default: 10)

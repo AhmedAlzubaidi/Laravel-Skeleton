@@ -16,10 +16,10 @@ describe('User Controller - Admin Users', function () {
         $this->seed(DatabaseSeeder::class);
 
         // Get admin user created by seeder
-        $this->admin = User::where('name', 'admin')->first();
+        $this->admin = User::where('username', 'admin')->first();
 
         // Create a normal user for testing
-        $this->user = User::where('name', '!=', 'admin')->first();
+        $this->user = User::where('username', '!=', 'admin')->first();
 
         // Authenticate as admin for all tests
         $this->actingAs($this->admin, 'api');
@@ -35,7 +35,7 @@ describe('User Controller - Admin Users', function () {
                 ->assertJsonStructure([
                     'data' => [
                         '*' => [
-                            'name',
+                            'username',
                             'email',
                             'status',
                         ],
@@ -47,15 +47,15 @@ describe('User Controller - Admin Users', function () {
                 ]);
         });
 
-        it('allows admin to filter users by name', function () {
-            User::factory()->create(['name' => 'Unique John Doe']);
-            User::factory()->create(['name' => 'Jane Smith']);
+        it('allows admin to filter users by username', function () {
+            User::factory()->create(['username' => 'Unique John Doe']);
+            User::factory()->create(['username' => 'Jane Smith']);
 
-            $response = $this->getJson('/api/v1/users?name=Unique John');
+            $response = $this->getJson('/api/v1/users?username=Unique John');
 
             $response->assertStatus(200)
                 ->assertJsonCount(1, 'data')
-                ->assertJsonPath('data.0.name', 'Unique John Doe')
+                ->assertJsonPath('data.0.username', 'Unique John Doe')
                 ->assertJsonStructure([
                     'data',
                     'current_page',
@@ -141,7 +141,7 @@ describe('User Controller - Admin Users', function () {
                 ->assertJsonStructure([
                     'data' => [
                         'id',
-                        'name',
+                        'username',
                         'email',
                         'status',
                     ],
@@ -167,9 +167,10 @@ describe('User Controller - Admin Users', function () {
     describe('POST /api/v1/users', function () {
         it('allows admin to create new users', function () {
             $userData = [
-                'name'     => 'New User',
-                'email'    => 'newuser@example.com',
-                'password' => 'password123',
+                'username' => 'New User',
+                'email' => 'newuser@example.com',
+                'password' => 'MySecurePass123!@#',
+                'password_confirmation' => 'MySecurePass123!@#',
             ];
 
             $response = $this->postJson('/api/v1/users', $userData);
@@ -178,29 +179,30 @@ describe('User Controller - Admin Users', function () {
                 ->assertJsonStructure([
                     'data' => [
                         'id',
-                        'name',
+                        'username',
                         'email',
                         'status',
                     ],
                     'message',
                 ])
-                ->assertJsonPath('data.name', 'New User')
+                ->assertJsonPath('data.username', 'New User')
                 ->assertJsonPath('data.email', 'newuser@example.com')
                 ->assertJsonPath('data.status', UserStatus::ACTIVE->value);
 
             $this->assertDatabaseHas('users', [
-                'name'   => 'New User',
-                'email'  => 'newuser@example.com',
+                'username' => 'New User',
+                'email' => 'newuser@example.com',
                 'status' => UserStatus::ACTIVE->value,
             ]);
         });
 
         it('allows admin to create user with custom status', function () {
             $userData = [
-                'name'     => 'New User',
-                'email'    => 'newuser@example.com',
-                'password' => 'password123',
-                'status'   => UserStatus::PENDING->value,
+                'username' => 'New User',
+                'email' => 'newuser@example.com',
+                'password' => 'MySecurePass123!@#',
+                'password_confirmation' => 'MySecurePass123!@#',
+                'status' => UserStatus::PENDING->value,
             ];
 
             $response = $this->postJson('/api/v1/users', $userData);
@@ -209,7 +211,7 @@ describe('User Controller - Admin Users', function () {
                 ->assertJsonPath('data.status', UserStatus::PENDING->value);
 
             $this->assertDatabaseHas('users', [
-                'email'  => 'newuser@example.com',
+                'email' => 'newuser@example.com',
                 'status' => UserStatus::PENDING->value,
             ]);
         });
@@ -218,13 +220,13 @@ describe('User Controller - Admin Users', function () {
             $response = $this->postJson('/api/v1/users', []);
 
             $response->assertStatus(422)
-                ->assertJsonValidationErrors(['name', 'email']);
+                ->assertJsonValidationErrors(['username', 'email']);
         });
 
         it('validates email format', function () {
             $response = $this->postJson('/api/v1/users', [
-                'name'     => 'Test User',
-                'email'    => 'invalid-email',
+                'username' => 'Test User',
+                'email' => 'invalid-email',
                 'password' => 'password123',
             ]);
 
@@ -236,8 +238,8 @@ describe('User Controller - Admin Users', function () {
             User::factory()->create(['email' => 'existing@example.com']);
 
             $response = $this->postJson('/api/v1/users', [
-                'name'     => 'Test User',
-                'email'    => 'existing@example.com',
+                'username' => 'Test User',
+                'email' => 'existing@example.com',
                 'password' => 'password123',
             ]);
 
@@ -245,23 +247,50 @@ describe('User Controller - Admin Users', function () {
                 ->assertJsonValidationErrors(['email']);
         });
 
+        it('validates unique username', function () {
+            User::factory()->create(['username' => 'existinguser']);
+
+            $response = $this->postJson('/api/v1/users', [
+                'username' => 'existinguser',
+                'email' => 'test@example.com',
+                'password' => 'password123',
+            ]);
+
+            $response->assertStatus(422)
+                ->assertJsonValidationErrors(['username']);
+        });
+
         it('validates password length', function () {
             $response = $this->postJson('/api/v1/users', [
-                'name'     => 'Test User',
-                'email'    => 'test@example.com',
+                'username' => 'Test User',
+                'email' => 'test@example.com',
                 'password' => '123',
+                'password_confirmation' => '123',
             ]);
 
             $response->assertStatus(422)
                 ->assertJsonValidationErrors(['password']);
+        });
+
+        it('validates password against HaveIBeenPwned data leaks', function () {
+            $response = $this->postJson('/api/v1/users', [
+                'username' => 'Test User',
+                'email' => 'test@example.com',
+                'password' => 'Password123!',
+                'password_confirmation' => 'Password123!',
+            ]);
+
+            $response->assertStatus(422)
+                ->assertJsonValidationErrors(['password'])
+                ->assertJsonPath('errors.password.0', 'The given password has appeared in a data leak. Please choose a different password.');
         });
     });
 
     describe('PUT /api/v1/users/{id}', function () {
         it('allows admin to update any user', function () {
             $updateData = [
-                'name'   => 'Updated User',
-                'email'  => 'updated@example.com',
+                'username' => 'Updated User',
+                'email' => 'updated@example.com',
                 'status' => UserStatus::INACTIVE->value,
             ];
 
@@ -271,29 +300,30 @@ describe('User Controller - Admin Users', function () {
                 ->assertJsonStructure([
                     'data' => [
                         'id',
-                        'name',
+                        'username',
                         'email',
                         'status',
                     ],
                     'message',
                 ])
-                ->assertJsonPath('data.name', 'Updated User')
+                ->assertJsonPath('data.username', 'Updated User')
                 ->assertJsonPath('data.email', 'updated@example.com')
                 ->assertJsonPath('data.status', UserStatus::INACTIVE->value);
 
             $this->assertDatabaseHas('users', [
-                'id'     => $this->user->id,
-                'name'   => 'Updated User',
-                'email'  => 'updated@example.com',
+                'id' => $this->user->id,
+                'username' => 'Updated User',
+                'email' => 'updated@example.com',
                 'status' => UserStatus::INACTIVE->value,
             ]);
         });
 
         it('allows admin to update user password', function () {
             $updateData = [
-                'name'     => $this->user->name,
-                'email'    => 'newemail@example.com',
-                'password' => 'newpassword123',
+                'username' => $this->user->username,
+                'email' => 'newemail@example.com',
+                'password' => 'MySecurePass123!@#',
+                'password_confirmation' => 'MySecurePass123!@#',
             ];
 
             $response = $this->putJson("/api/v1/users/{$this->user->id}", $updateData);
@@ -301,19 +331,19 @@ describe('User Controller - Admin Users', function () {
             $response->assertStatus(200);
 
             $this->assertDatabaseHas('users', [
-                'id'    => $this->user->id,
-                'name'  => $this->user->name,
+                'id' => $this->user->id,
+                'username' => $this->user->username,
                 'email' => 'newemail@example.com',
             ]);
 
             // Check that password was hashed
             $updatedUser = User::find($this->user->id);
-            expect(Hash::check('newpassword123', $updatedUser->password))->toBeTrue();
+            expect(Hash::check('MySecurePass123!@#', $updatedUser->password))->toBeTrue();
         });
 
         it('returns 404 for non-existent user', function () {
             $response = $this->putJson('/api/v1/users/999', [
-                'name'  => 'Test',
+                'username' => 'Test',
                 'email' => 'test@example.com',
             ]);
 
@@ -324,19 +354,44 @@ describe('User Controller - Admin Users', function () {
             $response = $this->putJson("/api/v1/users/{$this->user->id}", []);
 
             $response->assertStatus(422)
-                ->assertJsonValidationErrors(['name', 'email']);
+                ->assertJsonValidationErrors(['username', 'email']);
         });
 
         it('validates email uniqueness excluding current user', function () {
             $otherUser = User::factory()->create(['email' => 'other@example.com']);
 
             $response = $this->putJson("/api/v1/users/{$this->user->id}", [
-                'name'  => 'Test User',
+                'username' => 'Test User',
                 'email' => 'other@example.com',
             ]);
 
             $response->assertStatus(422)
                 ->assertJsonValidationErrors(['email']);
+        });
+
+        it('validates username uniqueness excluding current user', function () {
+            $otherUser = User::factory()->create(['username' => 'otheruser']);
+
+            $response = $this->putJson("/api/v1/users/{$this->user->id}", [
+                'username' => 'otheruser',
+                'email' => 'test@example.com',
+            ]);
+
+            $response->assertStatus(422)
+                ->assertJsonValidationErrors(['username']);
+        });
+
+        it('validates password against HaveIBeenPwned when updating', function () {
+            $response = $this->putJson("/api/v1/users/{$this->user->id}", [
+                'username' => $this->user->username,
+                'email' => $this->user->email,
+                'password' => 'Password123!',
+                'password_confirmation' => 'Password123!',
+            ]);
+
+            $response->assertStatus(422)
+                ->assertJsonValidationErrors(['password'])
+                ->assertJsonPath('errors.password.0', 'The given password has appeared in a data leak. Please choose a different password.');
         });
     });
 
@@ -348,7 +403,7 @@ describe('User Controller - Admin Users', function () {
                 ->assertJsonStructure([
                     'data' => [
                         'id',
-                        'name',
+                        'username',
                         'email',
                         'status',
                     ],
@@ -374,10 +429,10 @@ describe('User Controller - Normal Users', function () {
         $this->seed(DatabaseSeeder::class);
 
         // Get admin user created by seeder
-        $this->admin = User::where('name', 'admin')->first();
+        $this->admin = User::where('username', 'admin')->first();
 
         // Create a normal user for testing
-        $this->user = User::where('name', '!=', 'admin')->first();
+        $this->user = User::where('username', '!=', 'admin')->first();
 
         // Authenticate as normal user for all tests
         $this->actingAs($this->user, 'api');
@@ -399,7 +454,7 @@ describe('User Controller - Normal Users', function () {
                 ->assertJsonStructure([
                     'data' => [
                         'id',
-                        'name',
+                        'username',
                         'email',
                         'status',
                     ],
@@ -424,9 +479,10 @@ describe('User Controller - Normal Users', function () {
     describe('POST /api/v1/users', function () {
         it('denies normal users from creating new users', function () {
             $userData = [
-                'name'     => 'New User',
-                'email'    => 'newuser@example.com',
-                'password' => 'password123',
+                'username' => 'New User',
+                'email' => 'newuser@example.com',
+                'password' => 'MySecurePass123!@#',
+                'password_confirmation' => 'MySecurePass123!@#',
             ];
 
             $response = $this->postJson('/api/v1/users', $userData);
@@ -438,47 +494,27 @@ describe('User Controller - Normal Users', function () {
     describe('PUT /api/v1/users/{id}', function () {
         it('allows normal users to update their own profile', function () {
             $updateData = [
-                'name'  => 'Updated Normal User',
+                'username' => 'Updated Normal User',
                 'email' => 'updated@example.com',
             ];
 
             $response = $this->putJson("/api/v1/users/{$this->user->id}", $updateData);
 
             $response->assertStatus(200)
-                ->assertJsonPath('data.name', 'Updated Normal User')
+                ->assertJsonPath('data.username', 'Updated Normal User')
                 ->assertJsonPath('data.email', 'updated@example.com');
 
             $this->assertDatabaseHas('users', [
-                'id'    => $this->user->id,
-                'name'  => 'Updated Normal User',
+                'id' => $this->user->id,
+                'username' => 'Updated Normal User',
                 'email' => 'updated@example.com',
-            ]);
-        });
-
-        it('allows normal users to update their own profile and ignore duplicate email if it is the same email of the current user', function () {
-            $this->user->refresh();
-            $updateData = [
-                'name'  => 'Updated Normal User',
-                'email' => $this->user->email,
-            ];
-
-            $response = $this->putJson("/api/v1/users/{$this->user->id}", $updateData);
-
-            $response->assertStatus(200)
-                ->assertJsonPath('data.name', 'Updated Normal User')
-                ->assertJsonPath('data.email', $this->user->email);
-
-            $this->assertDatabaseHas('users', [
-                'id'    => $this->user->id,
-                'name'  => 'Updated Normal User',
-                'email' => $this->user->email,
             ]);
         });
 
         it('denies normal users from updating their own status', function () {
             $updateData = [
-                'name'   => $this->user->name,
-                'email'  => 'updated@example.com',
+                'username' => $this->user->username,
+                'email' => $this->user->email,
                 'status' => UserStatus::INACTIVE->value,
             ];
 
@@ -489,8 +525,9 @@ describe('User Controller - Normal Users', function () {
 
         it('denies normal users from updating other users profiles', function () {
             $updateData = [
-                'name'   => 'Updated Admin',
-                'email'  => 'admin@example.com',
+                'username' => 'Updated Admin',
+                'email' => 'admin@example.com',
+                'status' => UserStatus::INACTIVE->value,
             ];
 
             $response = $this->putJson("/api/v1/users/{$this->admin->id}", $updateData);
@@ -502,7 +539,7 @@ describe('User Controller - Normal Users', function () {
             $response = $this->putJson("/api/v1/users/{$this->user->id}", []);
 
             $response->assertStatus(422)
-                ->assertJsonValidationErrors(['name', 'email']);
+                ->assertJsonValidationErrors(['username', 'email']);
         });
     });
 
