@@ -33,6 +33,9 @@ php artisan passport:keys
 
 # Run database migrations
 php artisan migrate
+
+# Create admin user and roles
+php artisan db:seed
 ```
 
 ### Development Commands
@@ -52,6 +55,8 @@ composer refactor
 
 # Start development server
 php artisan serve
+# To Access Filament admin panel
+# visit: http://localhost:8000/admin
 ```
 
 ---
@@ -64,11 +69,13 @@ php artisan serve
 - **Commands**: DTOs for write operations (create, update) using Spatie Laravel Data
 - **Queries**: DTOs for read operations (list, show) using Spatie Laravel Data
 - **DTOs**: Data Transfer Objects for responses using Spatie Laravel Data
+- **BaseData**: Common foundation class providing consistent behavior across all DTOs
 
 ### **Authorization & Permissions**
 - **UserPolicy**: Enforces access control based on user roles
 - **Spatie Permission**: Role-based access control
 - **Admin Bypass**: Admins bypass all authorization checks via `Gate::before` callback
+- **Status Update Restriction**: Only admins can update user status
 
 ### **Routes**
 - API routes are defined in `routes/api.php` with v1 versioning
@@ -120,6 +127,40 @@ final readonly class UserController
 }
 ```
 
+### **BaseData Foundation**
+All Commands, Queries, and DTOs extend from `BaseData`, which provides:
+- **Consistent toArray() behavior**: Filters out empty values based on validation rules
+- **FormRequest-like validation**: Behaves like Laravel's `validated()` method
+- **Type safety**: Ensures consistent data handling across the application
+
+## 🧩 Example: BaseData Implementation
+```php
+abstract class BaseData extends Data
+{
+    public static function rules(): array
+    {
+        return [];
+    }
+
+    public final function toArray(): array
+    {
+        $rules = static::rules();
+        $data = parent::toArray();
+
+        foreach ($data as $key => $value) {
+            if (
+                isset($rules[$key]) &&
+                $this->hasValidationRule($rules[$key], ['required', 'sometimes']) &&
+                !filled($value)) {
+                unset($data[$key]);
+            }
+        }
+
+        return $data;
+    }
+}
+```
+
 ### **DTOs & Validation**
 - **Commands**: Handle request validation for write operations using Spatie Laravel Data
 - **Queries**: Handle request validation for read operations using Spatie Laravel Data  
@@ -129,7 +170,7 @@ final readonly class UserController
 ## 🧩 Example: DTOs and Commands
 ```php
 // CreateUserCommand - Request validation
-final class CreateUserCommand extends Data
+final class CreateUserCommand extends BaseData
 {
     public function __construct(
         public string $name,
@@ -144,13 +185,13 @@ final class CreateUserCommand extends Data
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'max:255'],
-            'status' => ['required', new Enum(UserStatus::class)],
+            'status' => ['sometimes', 'required', new Enum(UserStatus::class)],
         ];
     }
 }
 
 // GetUsersQuery - Request validation with pagination
-final class GetUsersQuery extends Data
+final class GetUsersQuery extends BaseData
 {
     public function __construct(
         public ?string $name,
@@ -173,7 +214,7 @@ final class GetUsersQuery extends Data
 }
 
 // UserDto - Response serialization
-final class UserDto extends Data
+final class UserDto extends BaseData
 {
     public function __construct(
         public int $id,
@@ -194,6 +235,9 @@ final class UserDto extends Data
 - [`laravel/framework`](https://laravel.com/) – The Laravel framework
 - [`laravel/passport`](https://github.com/laravel/passport) – OAuth2 server for API authentication
 - [`spatie/laravel-permission`](https://github.com/spatie/laravel-permission) – Role and permission management
+
+### **Admin Panel**
+- [`filament/filament`](https://filamentphp.com/) – Beautiful admin panel and application framework
 
 ### **Data & Validation**
 - [`spatie/laravel-data`](https://github.com/spatie/laravel-data) – Typed DTOs & transformers
@@ -263,8 +307,8 @@ describe('User Controller - Normal Users', function () {
 ```
 
 ### **Test Coverage**
-- **94 tests** covering all CRUD operations and architecture principles
-- **381 assertions** ensuring comprehensive coverage
+- **90 tests** covering all CRUD operations and architecture principles
+- **369 assertions** ensuring comprehensive coverage
 - **100% type coverage** across all classes
 - **Authorization testing** for both admin and normal users
 - **Validation testing** for all input fields
@@ -292,6 +336,18 @@ app/
 ├── Enums/......................... # Enum classes
 │   └── UserStatus.php
 │
+├── Foundation/.................... # Base classes and common functionality
+│   └── BaseData.php
+│
+├── Filament/...................... # Admin panel resources
+│   └── Resources/
+│       └── UserResource/
+│           ├── UserResource.php
+│           └── Pages/
+│               ├── ListUsers.php
+│               ├── CreateUser.php
+│               └── EditUser.php
+│
 ├── Http/
 │   ├── Controllers/............... # Thin coordination layer
 │   │   └── UserController.php
@@ -312,10 +368,10 @@ database/
 │   ├── *_add_status_to_users_table.php
 │   ├── *_create_permission_tables.php
 │   └── *_create_oauth_*.php
-└── seeders/....................... # Database seeders
-    ├── DatabaseSeeder.php
-    ├── RoleSeeder.php
-    └── UserSeeder.php
+├── seeders/....................... # Database seeders
+│   ├── DatabaseSeeder.php
+│   ├── RoleSeeder.php
+│   └── UserSeeder.php
 │
 tests/
 ├── Feature/....................... # Feature tests
@@ -345,11 +401,12 @@ tests/
 ```php
 class UserPolicy
 {
-    public function viewAny(User $user): bool { return false; }
+    public function viewAny(): bool { return false; }
     public function view(User $user, User $model): bool { return $user->id === $model->id; }
-    public function create(User $user): bool { return false; }
+    public function create(): bool { return false; }
     public function update(User $user, User $model): bool { return $user->id === $model->id; }
-    public function delete(User $user, User $model): bool { return false; }
+    public function updateStatus(): bool { return false; }
+    public function delete(): bool { return false; }
 }
 ```
 
@@ -365,12 +422,20 @@ class UserPolicy
 - ✅ Email and password validation
 - ✅ Filtering by name, email, and status
 - ✅ Pagination support (configurable per_page and page parameters)
+- ✅ Status update restriction (admin-only)
+
+### **Admin Panel (Filament)**
+- ✅ Beautiful admin interface for user management
+- ✅ User listing with search and filters
+- ✅ User creation and editing forms
+- ✅ Role and permission management
+- ✅ Responsive design with Tailwind CSS
 
 ### **API Endpoints**
 - `GET /api/v1/users` - List users with filtering and pagination (admin only)
 - `GET /api/v1/users/{id}` - Show user (own profile or admin)
 - `POST /api/v1/users` - Create user (admin only)
-- `PUT /api/v1/users/{id}` - Update user (own profile or admin)
+- `PUT /api/v1/users/{id}` - Update user (own profile or admin, status admin-only)
 - `DELETE /api/v1/users/{id}` - Delete user (admin only)
 - `GET /api/v1/user` - Get current authenticated user
 
@@ -382,7 +447,7 @@ class UserPolicy
 - `page` - Page number (default: 1)
 
 ### **Testing**
-- ✅ Comprehensive test coverage (94 tests, 381 assertions)
+- ✅ Comprehensive test coverage (90 tests, 369 assertions)
 - ✅ 100% type coverage across all classes
 - ✅ Admin and normal user scenarios
 - ✅ Authorization testing
@@ -397,5 +462,6 @@ class UserPolicy
 - ✅ Static analysis with Larastan
 - ✅ Automated refactoring with Rector
 - ✅ Prettier formatting for frontend assets
+- ✅ BaseData foundation for consistent DTO behavior
 
 </details>
