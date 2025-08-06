@@ -47,7 +47,7 @@ final readonly class UserController
         $user = User::create($commandData);
 
         return response()->json([
-            'data' => UserDto::from($user),
+            'data'    => UserDto::from($user),
             'message' => __('User created successfully'),
         ], 201);
     }
@@ -61,7 +61,7 @@ final readonly class UserController
         Gate::authorize('view', $user);
 
         return response()->json([
-            'data' => UserDto::from($user),
+            'data'    => UserDto::from($user),
             'message' => __('User fetched successfully'),
         ]);
     }
@@ -89,7 +89,7 @@ final readonly class UserController
         $user->update($commandData);
 
         return response()->json([
-            'data' => UserDto::from($user),
+            'data'    => UserDto::from($user),
             'message' => __('User updated successfully'),
         ]);
     }
@@ -105,7 +105,7 @@ final readonly class UserController
         $user->delete();
 
         return response()->json([
-            'data' => UserDto::from($user),
+            'data'    => UserDto::from($user),
             'message' => __('User deleted successfully'),
         ]);
     }

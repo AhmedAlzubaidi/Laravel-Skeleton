@@ -5,67 +5,16 @@ declare(strict_types=1);
 use App\Enums\UserStatus;
 
 describe('UserStatus Enum', function () {
-    describe('Enum Cases', function () {
-        it('has all expected cases', function () {
-            expect(UserStatus::cases())->toHaveCount(4);
-            expect(UserStatus::ACTIVE)->toBeInstanceOf(UserStatus::class);
-            expect(UserStatus::INACTIVE)->toBeInstanceOf(UserStatus::class);
-            expect(UserStatus::SUSPENDED)->toBeInstanceOf(UserStatus::class);
-            expect(UserStatus::PENDING)->toBeInstanceOf(UserStatus::class);
-        });
-
-        it('has correct string values', function () {
-            expect(UserStatus::ACTIVE->value)->toBe('active');
-            expect(UserStatus::INACTIVE->value)->toBe('inactive');
-            expect(UserStatus::SUSPENDED->value)->toBe('suspended');
-            expect(UserStatus::PENDING->value)->toBe('pending');
-        });
-
-        it('can be compared directly', function () {
-            expect(UserStatus::ACTIVE)->toBe(UserStatus::ACTIVE);
-            expect(UserStatus::ACTIVE)->not->toBe(UserStatus::INACTIVE);
-        });
-
-        it('can be used in switch/match statements', function () {
-            $status = UserStatus::ACTIVE;
-
-            $result = match ($status) {
-                UserStatus::ACTIVE => 'active_status',
-                UserStatus::INACTIVE => 'inactive_status',
-                UserStatus::SUSPENDED => 'suspended_status',
-                UserStatus::PENDING => 'pending_status',
-            };
-
-            expect($result)->toBe('active_status');
-        });
-    });
-
     describe('values() method', function () {
         it('returns all enum values as array', function () {
             $values = UserStatus::values();
 
             expect($values)->toBeArray();
             expect($values)->toHaveCount(4);
-            expect($values)->toContain('active');
-            expect($values)->toContain('inactive');
-            expect($values)->toContain('suspended');
-            expect($values)->toContain('pending');
-        });
-
-        it('returns values in correct order', function () {
-            $values = UserStatus::values();
-
             expect($values[0])->toBe('active');
             expect($values[1])->toBe('inactive');
             expect($values[2])->toBe('suspended');
             expect($values[3])->toBe('pending');
-        });
-
-        it('returns unique values', function () {
-            $values = UserStatus::values();
-            $uniqueValues = array_unique($values);
-
-            expect($values)->toHaveCount(count($uniqueValues));
         });
     });
 
@@ -174,10 +123,10 @@ describe('UserStatus Enum', function () {
         it('handles all cases in match statements', function () {
             foreach (UserStatus::cases() as $status) {
                 $label = match ($status) {
-                    UserStatus::ACTIVE => 'Active',
-                    UserStatus::INACTIVE => 'Inactive',
+                    UserStatus::ACTIVE    => 'Active',
+                    UserStatus::INACTIVE  => 'Inactive',
                     UserStatus::SUSPENDED => 'Suspended',
-                    UserStatus::PENDING => 'Pending',
+                    UserStatus::PENDING   => 'Pending',
                 };
 
                 expect($label)->toBe($status->label());

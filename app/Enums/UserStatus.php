@@ -27,10 +27,10 @@ enum UserStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::ACTIVE => 'Active',
-            self::INACTIVE => 'Inactive',
+            self::ACTIVE    => 'Active',
+            self::INACTIVE  => 'Inactive',
             self::SUSPENDED => 'Suspended',
-            self::PENDING => 'Pending',
+            self::PENDING   => 'Pending',
         };
     }
 
@@ -40,10 +40,10 @@ enum UserStatus: string
     public function color(): string
     {
         return match ($this) {
-            self::ACTIVE => 'green',
-            self::INACTIVE => 'gray',
+            self::ACTIVE    => 'green',
+            self::INACTIVE  => 'gray',
             self::SUSPENDED => 'red',
-            self::PENDING => 'yellow',
+            self::PENDING   => 'yellow',
         };
     }
 }
