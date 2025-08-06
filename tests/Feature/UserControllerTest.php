@@ -440,7 +440,6 @@ describe('User Controller - Normal Users', function () {
             $updateData = [
                 'name' => 'Updated Normal User',
                 'email' => 'updated@example.com',
-                'status' => UserStatus::INACTIVE->value,
             ];
 
             $response = $this->putJson("/api/v1/users/{$this->user->id}", $updateData);
@@ -454,6 +453,18 @@ describe('User Controller - Normal Users', function () {
                 'name' => 'Updated Normal User',
                 'email' => 'updated@example.com',
             ]);
+        });
+
+        it('denies normal users from updating their own status', function () {
+            $updateData = [
+                'name' => $this->user->name,
+                'email' => $this->user->email,
+                'status' => UserStatus::INACTIVE->value,
+            ];
+
+            $response = $this->putJson("/api/v1/users/{$this->user->id}", $updateData);
+
+            $response->assertStatus(403);
         });
 
         it('denies normal users from updating other users profiles', function () {

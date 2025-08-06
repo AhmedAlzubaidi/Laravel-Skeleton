@@ -41,6 +41,14 @@ final readonly class UserPolicy
     }
 
     /**
+     * Determine whether the user can update the model's status.
+     */
+    public function updateStatus(): bool
+    {
+        return false;
+    }
+
+    /**
      * Determine whether the user can delete the model.
      */
     public function delete(): bool

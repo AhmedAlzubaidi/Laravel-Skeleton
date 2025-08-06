@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Queries;
 
 use App\Enums\UserStatus;
-use Spatie\LaravelData\Data;
+use App\Foundation\BaseData;
 use Illuminate\Validation\Rules\Enum;
 
-final class GetUsersQuery extends Data
+final class GetUsersQuery extends BaseData
 {
     /**
      * @param  string|null  $name  The name of the user to search for
@@ -28,16 +28,16 @@ final class GetUsersQuery extends Data
     /**
      * Get the validation rules for the query.
      *
-     * @return array<string, array<int, mixed>>
+     * @return array<string, string|array<int, mixed>>
      */
     public static function rules(): array
     {
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'email' => ['sometimes', 'required', 'email', 'exists:users,email'],
-            'status' => ['sometimes', 'required', new Enum(UserStatus::class)],
+            'name'     => ['sometimes', 'required', 'string', 'max:255'],
+            'email'    => ['sometimes', 'required', 'email', 'exists:users,email'],
+            'status'   => ['sometimes', 'required', new Enum(UserStatus::class)],
             'per_page' => ['sometimes', 'required', 'integer', 'min:1', 'max:100'],
-            'page' => ['sometimes', 'required', 'integer', 'min:1'],
+            'page'     => ['sometimes', 'required', 'integer', 'min:1'],
         ];
     }
 }

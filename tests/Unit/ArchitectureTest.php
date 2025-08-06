@@ -5,7 +5,10 @@ declare(strict_types=1);
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 arch()->preset()->php();
-arch()->preset()->strict();
+arch()->preset()->strict()
+    ->ignoring([
+        'App\Foundation',
+    ]);
 arch()->preset()->laravel()->ignoring([
     'App\Providers\Filament\AdminPanelProvider',
 ]);
@@ -37,6 +40,7 @@ arch('avoid mutation')
     ->toBeReadonly()
     ->ignoring([
         'App\Exceptions',
+        'App\Foundation',
         'App\Providers',
         'App\Services',
         'App\Commands',

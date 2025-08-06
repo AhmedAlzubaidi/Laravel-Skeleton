@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\DTOs;
 
 use App\Enums\UserStatus;
-use Spatie\LaravelData\Data;
+use App\Foundation\BaseData;
 
-final class UserDto extends Data
+final class UserDto extends BaseData
 {
     /**
      * @param  int  $id  The user's unique identifier

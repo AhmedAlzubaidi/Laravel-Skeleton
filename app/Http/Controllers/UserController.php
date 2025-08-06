@@ -74,9 +74,13 @@ final readonly class UserController
         $user = User::findOrFail($id);
         Gate::authorize('update', $user);
 
+        if (filled($command->status) && $command->status !== $user->status) {
+            Gate::authorize('updateStatus', $user);
+        }
+
         $commandData = $command->toArray();
 
-        if ($command->password !== null && $command->password !== '' && $command->password !== '0') {
+        if (filled($command->password)) {
             $commandData['password'] = Hash::make($command->password);
         } else {
             unset($commandData['password']);

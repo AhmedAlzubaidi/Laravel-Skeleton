@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Commands;
 
 use App\Enums\UserStatus;
-use Spatie\LaravelData\Data;
+use App\Foundation\BaseData;
 use Illuminate\Validation\Rules\Enum;
 
-final class CreateUserCommand extends Data
+final class CreateUserCommand extends BaseData
 {
     /**
      * Create a new User instance.
@@ -28,15 +28,15 @@ final class CreateUserCommand extends Data
     /**
      * Get the validation rules for the command.
      *
-     * @return array<string, array<int, mixed>>
+     * @return array<string, string|array<int, mixed>>
      */
     public static function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'max:255'],
-            'status' => ['required', new Enum(UserStatus::class)],
+            'status'   => ['sometimes', 'required', new Enum(UserStatus::class)],
         ];
     }
 }
