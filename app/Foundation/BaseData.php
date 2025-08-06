@@ -48,14 +48,17 @@ abstract class BaseData extends Data
 
     /**
      * Check if a given rule set includes any of the specified rule names.
+     *
+     * @param  string|array<int, mixed>  $ruleSet
+     * @param  array<int, string>  $needles
      */
     protected function hasValidationRule(string|array $ruleSet, array $needles): bool
     {
         $rules = is_string($ruleSet) ? explode('|', $ruleSet) : $ruleSet;
 
-        return ! empty(array_intersect(
+        return array_intersect(
             array_filter($rules, 'is_scalar'),
             $needles
-        ));
+        ) !== [];
     }
 }
