@@ -29,6 +29,11 @@
             "sort_algorithm": "length",
             "imports_order": ["class", "function", "const"]
         },
+        "binary_operator_spaces": {
+            "operators": {
+                "=>": "align_single_space_minimal_by_scope"
+            }
+        },
         "ordered_class_elements": {
             "order": [
                 "use_trait",

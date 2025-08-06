@@ -34,7 +34,7 @@ final class UpdateUserCommand extends BaseData
     public static function rules(): array
     {
         /** @var string $userId */
-        $userId = 1;
+        $userId = Route::input('id');
 
         return [
             'name'     => ['required', 'string', 'max:255'],
