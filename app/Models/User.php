@@ -9,7 +9,9 @@ use App\Enums\UserStatus;
 use Laravel\Passport\HasApiTokens;
 use Database\Factories\UserFactory;
 use Spatie\Permission\Traits\HasRoles;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
 use Laravel\Passport\Contracts\OAuthenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,7 +19,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 /**
  * @mixin IdeHelperUser
  */
-final class User extends Authenticatable implements OAuthenticatable
+final class User extends Authenticatable implements OAuthenticatable, FilamentUser, HasName
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
@@ -50,6 +52,11 @@ final class User extends Authenticatable implements OAuthenticatable
     public function findForPassport(string $username): ?self
     {
         return $this->where('username', $username)->orWhere('email', $username)->first();
+    }
+
+    public function getFilamentName(): string
+    {
+        return "{$this->username}";
     }
 
     /**

@@ -13,6 +13,17 @@ use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 
 final class Login extends BaseLogin
 {
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                $this->getLoginFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getRememberFormComponent(),
+            ])
+            ->statePath('data');
+    }
+
     /**
      * Authenticate the user.
      */
