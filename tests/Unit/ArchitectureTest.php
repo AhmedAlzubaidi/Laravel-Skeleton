@@ -8,6 +8,7 @@ arch()->preset()->php();
 arch()->preset()->strict()
     ->ignoring([
         'App\Foundation',
+        'App\Filament\Pages\Auth',
     ]);
 arch()->preset()->laravel()->ignoring([
     'App\Providers\Filament\AdminPanelProvider',

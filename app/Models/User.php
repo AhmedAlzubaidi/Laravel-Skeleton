@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Filament\Panel;
 use App\Enums\UserStatus;
 use Laravel\Passport\HasApiTokens;
 use Database\Factories\UserFactory;
@@ -42,6 +43,22 @@ final class User extends Authenticatable implements OAuthenticatable
         'password',
         'remember_token',
     ];
+
+    /**
+     * Find the user instance for the given username.
+     */
+    public function findForPassport(string $username): ?self
+    {
+        return $this->where('username', $username)->orWhere('email', $username)->first();
+    }
+
+    /**
+     * Check if the user can access the panel.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin();
+    }
 
     /**
      * Check if the user is an admin.
