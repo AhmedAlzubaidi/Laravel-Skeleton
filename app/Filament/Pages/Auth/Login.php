@@ -13,6 +13,9 @@ use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 
 final class Login extends BaseLogin
 {
+    /**
+     * Get the login form component.
+     */
     public function form(Form $form): Form
     {
         return $form

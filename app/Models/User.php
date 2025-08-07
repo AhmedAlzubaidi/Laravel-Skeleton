@@ -54,6 +54,9 @@ final class User extends Authenticatable implements FilamentUser, HasName, OAuth
         return $this->where('username', $username)->orWhere('email', $username)->first();
     }
 
+    /**
+     * Get the user's name for Filament.
+     */
     public function getFilamentName(): string
     {
         return "{$this->username}";
