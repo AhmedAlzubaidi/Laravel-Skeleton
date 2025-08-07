@@ -8,8 +8,8 @@ use Filament\Panel;
 use App\Enums\UserStatus;
 use Laravel\Passport\HasApiTokens;
 use Database\Factories\UserFactory;
-use Spatie\Permission\Traits\HasRoles;
 use Filament\Models\Contracts\HasName;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Laravel\Passport\Contracts\OAuthenticatable;
@@ -19,7 +19,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 /**
  * @mixin IdeHelperUser
  */
-final class User extends Authenticatable implements OAuthenticatable, FilamentUser, HasName
+final class User extends Authenticatable implements FilamentUser, HasName, OAuthenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
