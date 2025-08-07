@@ -296,20 +296,20 @@ describe('User Model', function () {
         it('casts status to UserStatus enum', function () {
             $user = User::factory()->create(['status' => 'active']);
 
-            expect($user->status)->toBeInstanceOf(\App\Enums\UserStatus::class);
+            expect($user->status)->toBeInstanceOf(App\Enums\UserStatus::class);
         });
 
         it('casts email_verified_at to datetime', function () {
             $user = User::factory()->create(['email_verified_at' => '2023-01-01 12:00:00']);
 
-            expect($user->email_verified_at)->toBeInstanceOf(\Carbon\Carbon::class);
+            expect($user->email_verified_at)->toBeInstanceOf(Carbon\Carbon::class);
         });
 
         it('hashes password automatically', function () {
             $user = User::factory()->create(['password' => 'plaintext']);
 
             expect($user->password)->not->toBe('plaintext');
-            expect(\Illuminate\Support\Facades\Hash::check('plaintext', $user->password))->toBeTrue();
+            expect(Illuminate\Support\Facades\Hash::check('plaintext', $user->password))->toBeTrue();
         });
     });
 
@@ -317,19 +317,19 @@ describe('User Model', function () {
         it('implements FilamentUser interface', function () {
             $user = new User();
 
-            expect($user)->toBeInstanceOf(\Filament\Models\Contracts\FilamentUser::class);
+            expect($user)->toBeInstanceOf(Filament\Models\Contracts\FilamentUser::class);
         });
 
         it('implements HasName interface', function () {
             $user = new User();
 
-            expect($user)->toBeInstanceOf(\Filament\Models\Contracts\HasName::class);
+            expect($user)->toBeInstanceOf(Filament\Models\Contracts\HasName::class);
         });
 
         it('implements OAuthenticatable interface', function () {
             $user = new User();
 
-            expect($user)->toBeInstanceOf(\Laravel\Passport\Contracts\OAuthenticatable::class);
+            expect($user)->toBeInstanceOf(Laravel\Passport\Contracts\OAuthenticatable::class);
         });
 
         it('uses HasApiTokens trait', function () {
