@@ -21,7 +21,7 @@ cd /var/www
 php artisan config:clear || echo "Config clear failed (normal on first run)"
 php artisan route:clear || echo "Route clear failed (normal on first run)"
 php artisan view:clear || echo "View clear failed (normal on first run)"
-php artisan migrate:fresh --seed || echo "Migration/seed failed"
+php artisan migrate || echo "Migration failed"
 
 # Create storage link if it doesn't exist
 echo "Creating storage link..."
