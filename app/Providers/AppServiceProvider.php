@@ -6,10 +6,10 @@ namespace App\Providers;
 
 use App\Models\User;
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
@@ -48,7 +48,7 @@ final class AppServiceProvider extends ServiceProvider
      */
     private function configureModels(): void
     {
-        Model::shouldBeStrict(!app()->isProduction());
+        Model::shouldBeStrict(! app()->isProduction());
     }
 
     /**
