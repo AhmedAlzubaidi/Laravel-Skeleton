@@ -1,0 +1,95 @@
+services:
+  web:
+    image: nginx:latest # Using the default Nginx image with custom configuration.
+    volumes:
+      # Mount the application code for live updates
+      - ./:/var/www
+      # Mount the Nginx configuration file
+      - ./docker/development/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      # Map port 80 inside the container to the port specified by 'NGINX_PORT' on the host machine
+      - "80:80"
+    environment:
+      - NGINX_HOST=localhost
+    networks:
+      - laravel-development
+    depends_on:
+      php-fpm:
+        condition: service_started  # Wait for php-fpm to start
+
+  php-fpm:
+    # For the php-fpm service, we will create a custom image to install the necessary PHP extensions and setup proper permissions.
+    build:
+      context: .
+      dockerfile: ./docker/common/php-fpm/Dockerfile
+      target: development
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+        XDEBUG_ENABLED: ${XDEBUG_ENABLED:-true}
+        XDEBUG_MODE: develop,coverage,debug,profile
+        XDEBUG_HOST: ${XDEBUG_HOST:-host.docker.internal}
+        XDEBUG_IDE_KEY: ${XDEBUG_IDE_KEY:-DOCKER}
+        XDEBUG_LOG: /dev/stdout
+        XDEBUG_LOG_LEVEL: 0
+    env_file:
+      # Load the environment variables from the Laravel application
+      - .env
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      # Mount the application code for live updates
+      - ./:/var/www
+    networks:
+      - laravel-development
+    depends_on:
+      postgres:
+        condition: service_started  # Wait for postgres to start
+
+  workspace:
+    # For the workspace service, we will also create a custom image to install and setup all the necessary stuff.
+    build:
+      context: .
+      dockerfile: ./docker/development/workspace/Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+        XDEBUG_ENABLED: ${XDEBUG_ENABLED:-true}
+        XDEBUG_MODE: develop,coverage,debug,profile
+        XDEBUG_HOST: ${XDEBUG_HOST:-host.docker.internal}
+        XDEBUG_IDE_KEY: ${XDEBUG_IDE_KEY:-DOCKER}
+        XDEBUG_LOG: /dev/stdout
+        XDEBUG_LOG_LEVEL: 0
+    ports:
+      - '${VITE_PORT:-5173}:5173'
+    tty: true  # Enables an interactive terminal
+    stdin_open: true  # Keeps standard input open for 'docker exec'
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel-development
+
+  postgres:
+    image: postgres:16
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=laravel
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - postgres-data-development:/var/lib/postgresql/data
+    networks:
+      - laravel-development
+
+  redis:
+    image: redis:alpine
+    networks:
+      - laravel-development
+
+networks:
+  laravel-development:
+
+volumes:
+  postgres-data-development:
