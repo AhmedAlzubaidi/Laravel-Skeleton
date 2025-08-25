@@ -302,7 +302,7 @@ describe('User Model', function () {
         it('casts email_verified_at to datetime', function () {
             $user = User::factory()->create(['email_verified_at' => '2023-01-01 12:00:00']);
 
-            expect($user->email_verified_at)->toBeInstanceOf(Carbon\Carbon::class);
+            expect($user->email_verified_at)->toBeInstanceOf(Carbon\CarbonImmutable::class);
         });
 
         it('hashes password automatically', function () {
