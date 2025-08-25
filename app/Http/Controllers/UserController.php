@@ -12,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 use App\Commands\CreateUserCommand;
 use App\Commands\UpdateUserCommand;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Builder;
 
 final readonly class UserController

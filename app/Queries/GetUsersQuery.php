@@ -12,7 +12,7 @@ class GetUsersQuery extends BaseData
 {
     /**
      * Create a new GetUsersQuery instance.
-     * 
+     *
      * @param  ?string  $username  The username of the user to search for
      * @param  ?string  $email  The email of the user to search for
      * @param  ?UserStatus  $status  The status of the user to search for

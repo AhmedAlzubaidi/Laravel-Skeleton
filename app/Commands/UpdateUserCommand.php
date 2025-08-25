@@ -8,8 +8,8 @@ use App\Enums\UserStatus;
 use App\Foundation\BaseData;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Enum;
-use Illuminate\Validation\Rules\Password;
 use App\Transformers\PasswordTransformer;
+use Illuminate\Validation\Rules\Password;
 use Spatie\LaravelData\Attributes\WithTransformer;
 
 class UpdateUserCommand extends BaseData

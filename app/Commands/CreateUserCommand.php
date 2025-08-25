@@ -6,8 +6,8 @@ namespace App\Commands;
 
 use App\Enums\UserStatus;
 use App\Foundation\BaseData;
-use App\Transformers\PasswordTransformer;
 use Illuminate\Validation\Rules\Enum;
+use App\Transformers\PasswordTransformer;
 use Illuminate\Validation\Rules\Password;
 use Spatie\LaravelData\Attributes\WithTransformer;
 

@@ -24,7 +24,7 @@ pest()->presets()
             expect([
                 'sleep',
                 'usleep',
-            ])->not->toBeUsed()
+            ])->not->toBeUsed(),
         ];
     });
 /*
