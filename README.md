@@ -319,8 +319,8 @@ describe('User Controller - Normal Users', function () {
 ```
 
 ### **Test Coverage**
-- **142 tests** covering all CRUD operations and architecture principles
-- **471 assertions** ensuring comprehensive coverage
+- **141 tests** covering all CRUD operations and architecture principles
+- **456 assertions** ensuring comprehensive coverage
 - **100% type coverage** across all classes
 - **Authorization testing** for both admin and normal users
 - **Validation testing** for all input fields including password strength and HaveIBeenPwned data leak checks
@@ -464,7 +464,7 @@ class UserPolicy
 - `page` - Page number (default: 1)
 
 ### **Testing**
-- ✅ Comprehensive test coverage (142 tests, 471 assertions)
+- ✅ Comprehensive test coverage (141 tests, 456 assertions)
 - ✅ 100% type coverage across all classes
 - ✅ Admin and normal user scenarios
 - ✅ Authorization testing

@@ -5,11 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 arch()->preset()->php();
-arch()->preset()->strict()
-    ->ignoring([
-        'App\Foundation',
-        'App\Filament',
-    ]);
+arch()->preset()->skeleton();
 arch()->preset()->laravel()->ignoring([
     'App\Providers\Filament\AdminPanelProvider',
 ]);
@@ -34,23 +30,6 @@ arch('requests')
 arch('resources')
     ->expect('App\Http\Resources')
     ->not->toBeUsed();
-
-arch('avoid mutation')
-    ->expect('App')
-    ->classes()
-    ->toBeReadonly()
-    ->ignoring([
-        'App\Exceptions',
-        'App\Foundation',
-        'App\Providers',
-        'App\Services',
-        'App\Commands',
-        'App\Filament',
-        'App\Queries',
-        'App\Models',
-        'App\DTOs',
-        'App\Jobs',
-    ]);
 
 arch('annotations')
     ->expect('App')

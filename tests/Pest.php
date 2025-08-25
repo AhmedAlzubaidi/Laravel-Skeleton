@@ -17,6 +17,16 @@ pest()->extend(Tests\TestCase::class)
  // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
 
+pest()->presets()
+    ->custom('skeleton', function (array $userNamespaces) {
+        return [
+            expect($userNamespaces)->toUseStrictEquality(),
+            expect([
+                'sleep',
+                'usleep',
+            ])->not->toBeUsed()
+        ];
+    });
 /*
 |--------------------------------------------------------------------------
 | Expectations

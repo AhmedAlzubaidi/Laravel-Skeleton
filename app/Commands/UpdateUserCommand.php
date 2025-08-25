@@ -9,11 +9,13 @@ use App\Foundation\BaseData;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Password;
+use App\Transformers\PasswordTransformer;
+use Spatie\LaravelData\Attributes\WithTransformer;
 
-final class UpdateUserCommand extends BaseData
+class UpdateUserCommand extends BaseData
 {
     /**
-     * Create a new User instance.
+     * Create a new UpdateUserCommand instance.
      *
      * @param  string  $username  The user's username
      * @param  string  $email  The user's email address
@@ -23,6 +25,7 @@ final class UpdateUserCommand extends BaseData
     public function __construct(
         public string $username,
         public string $email,
+        #[WithTransformer(PasswordTransformer::class)]
         public ?string $password = null,
         public ?UserStatus $status = null,
     ) {}

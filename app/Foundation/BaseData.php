@@ -29,7 +29,7 @@ abstract class BaseData extends Data
      *
      * @return array<string, mixed>
      */
-    public final function toArray(): array
+    public function validated(): array
     {
         $rules = static::rules();
         $data = parent::toArray();
@@ -52,7 +52,7 @@ abstract class BaseData extends Data
      * @param  string|array<int, mixed>  $ruleSet
      * @param  array<int, string>  $needles
      */
-    protected function hasValidationRule(string|array $ruleSet, array $needles): bool
+    private function hasValidationRule(string|array $ruleSet, array $needles): bool
     {
         $rules = is_string($ruleSet) ? explode('|', $ruleSet) : $ruleSet;
 

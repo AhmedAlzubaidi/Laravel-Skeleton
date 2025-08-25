@@ -6,13 +6,15 @@ namespace App\Commands;
 
 use App\Enums\UserStatus;
 use App\Foundation\BaseData;
+use App\Transformers\PasswordTransformer;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Password;
+use Spatie\LaravelData\Attributes\WithTransformer;
 
-final class CreateUserCommand extends BaseData
+class CreateUserCommand extends BaseData
 {
     /**
-     * Create a new User instance.
+     * Create a new CreateUserCommand instance.
      *
      * @param  string  $username  The user's username
      * @param  string  $email  The user's email address
@@ -22,6 +24,7 @@ final class CreateUserCommand extends BaseData
     public function __construct(
         public string $username,
         public string $email,
+        #[WithTransformer(PasswordTransformer::class)]
         public string $password,
         public UserStatus $status = UserStatus::ACTIVE,
     ) {}

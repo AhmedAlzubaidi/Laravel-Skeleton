@@ -7,9 +7,11 @@ namespace App\DTOs;
 use App\Enums\UserStatus;
 use App\Foundation\BaseData;
 
-final class UserDto extends BaseData
+class UserDto extends BaseData
 {
     /**
+     * Create a new UserDto instance.
+     *
      * @param  int  $id  The user's unique identifier
      * @param  string  $username  The user's username
      * @param  string  $email  The user's email address
