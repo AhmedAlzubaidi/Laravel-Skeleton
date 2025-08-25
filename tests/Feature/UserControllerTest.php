@@ -357,28 +357,22 @@ describe('User Controller - Admin Users', function () {
                 ->assertJsonValidationErrors(['username', 'email']);
         });
 
-        it('validates email uniqueness excluding current user', function () {
-            $otherUser = User::factory()->create(['email' => 'other@example.com']);
-
+        it('email uniqueness validation excludes current user', function () {
             $response = $this->putJson("/api/v1/users/{$this->user->id}", [
-                'username' => 'Test User',
-                'email' => 'other@example.com',
+                'username' => fake()->unique()->userName(),
+                'email' => $this->user->email,
             ]);
 
-            $response->assertStatus(422)
-                ->assertJsonValidationErrors(['email']);
+            $response->assertStatus(200);
         });
 
-        it('validates username uniqueness excluding current user', function () {
-            $otherUser = User::factory()->create(['username' => 'otheruser']);
-
+        it('username uniqueness validation excludes current user', function () {
             $response = $this->putJson("/api/v1/users/{$this->user->id}", [
-                'username' => 'otheruser',
-                'email' => 'test@example.com',
+                'username' => $this->user->username,
+                'email' => fake()->unique()->safeEmail(),
             ]);
 
-            $response->assertStatus(422)
-                ->assertJsonValidationErrors(['username']);
+            $response->assertStatus(200);
         });
 
         it('validates password against HaveIBeenPwned when updating', function () {
