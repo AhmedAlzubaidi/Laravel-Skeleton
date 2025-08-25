@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace App\Filament\Pages\Auth;
 
-use Filament\Forms\Form;
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
-use Filament\Pages\Auth\Login as BaseLogin;
+use Filament\Schemas\Components\Component;
+use Filament\Auth\Pages\Login as BaseLogin;
 use Illuminate\Validation\ValidationException;
-use Filament\Http\Responses\Auth\Contracts\LoginResponse;
+use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 
-final class Login extends BaseLogin
+class Login extends BaseLogin
 {
     /**
      * Get the login form component.
      */
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 $this->getLoginFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getRememberFormComponent(),
@@ -36,7 +36,7 @@ final class Login extends BaseLogin
             return parent::authenticate();
         } catch (ValidationException) {
             throw ValidationException::withMessages([
-                'data.login' => __('filament-panels::pages/auth/login.messages.failed'),
+                'data.login' => __('filament-panels::auth/pages/login.messages.failed'),
             ]);
         }
     }

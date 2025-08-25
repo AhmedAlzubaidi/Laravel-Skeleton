@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\UserResource\Pages;
+namespace App\Filament\Resources\Users\Pages;
 
+use Filament\Actions\DeleteAction;
 use Filament\Actions;
-use App\Filament\Resources\UserResource;
-use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\Users\UserResource;
+use Filament\Resources\Pages\EditRecord;
 
-final class ListUsers extends ListRecords
+final class EditUser extends EditRecord
 {
     /**
      * @var class-string<UserResource>
@@ -21,7 +22,7 @@ final class ListUsers extends ListRecords
     public function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            DeleteAction::make(),
         ];
     }
 }
