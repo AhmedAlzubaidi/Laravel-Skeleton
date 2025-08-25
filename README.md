@@ -22,6 +22,9 @@ For running tests and code coverage, you'll need these PHP extensions:
 # Install PHP dependencies
 composer install
 
+# Install Node.js dependencies
+npm install
+
 # Copy environment file
 cp .env.example .env
 
@@ -240,7 +243,7 @@ final class UserDto extends BaseData
 <summary><strong>📦 Core Packages</strong></summary>
 
 ### **Core Framework & Authentication**
-- [`laravel/framework`](https://laravel.com/) – The Laravel framework
+- [`laravel/framework`](https://laravel.com/) – The Laravel framework (v12.0)
 - [`laravel/passport`](https://github.com/laravel/passport) – OAuth2 server for API authentication
 - [`spatie/laravel-permission`](https://github.com/spatie/laravel-permission) – Role and permission management
 
@@ -255,6 +258,7 @@ final class UserDto extends BaseData
 - [`barryvdh/laravel-ide-helper`](https://github.com/barryvdh/laravel-ide-helper) – IDE autocompletion for models, facades etc.
 - [`laravel/pint`](https://github.com/laravel/pint) – Opinionated code style formatting
 - [`rector/rector`](https://github.com/rectorphp/rector) – Automated code refactoring
+- [`laravel/boost`](https://github.com/laravel/boost) – Laravel-focused MCP server for augmenting your AI powered local development experience.
 
 ### **Testing & Quality**
 - [`pestphp/pest`](https://pestphp.com/) – Modern testing framework
@@ -315,8 +319,8 @@ describe('User Controller - Normal Users', function () {
 ```
 
 ### **Test Coverage**
-- **93 tests** covering all CRUD operations and architecture principles
-- **379 assertions** ensuring comprehensive coverage
+- **142 tests** covering all CRUD operations and architecture principles
+- **471 assertions** ensuring comprehensive coverage
 - **100% type coverage** across all classes
 - **Authorization testing** for both admin and normal users
 - **Validation testing** for all input fields including password strength and HaveIBeenPwned data leak checks
@@ -348,13 +352,16 @@ app/
 │   └── BaseData.php
 │
 ├── Filament/...................... # Admin panel resources
-│   └── Resources/
-│       └── UserResource/
-│           ├── UserResource.php
-│           └── Pages/
-│               ├── ListUsers.php
-│               ├── CreateUser.php
-│               └── EditUser.php
+│   ├── Resources/
+│   │   └── UserResource/
+│   │       ├── UserResource.php
+│   │       └── Pages/
+│   │           ├── ListUsers.php
+│   │           ├── CreateUser.php
+│   │           └── EditUser.php
+│   └── Pages/
+│       └── Auth/
+│           └── Login.php
 │
 ├── Http/
 │   ├── Controllers/............... # Thin coordination layer
@@ -366,14 +373,15 @@ app/
 │   └── User.php
 │
 ├── Providers/..................... # Service providers
-│   └── AppServiceProvider.php
+│   ├── AppServiceProvider.php
+│   └── Filament/
+│       └── AdminPanelProvider.php
 │
 database/
 ├── factories/..................... # Model factories
 │   └── UserFactory.php
 ├── migrations/.................... # Database migrations
 │   ├── *_create_users_table.php
-│   ├── *_add_status_to_users_table.php
 │   ├── *_create_permission_tables.php
 │   └── *_create_oauth_*.php
 ├── seeders/....................... # Database seeders
@@ -383,7 +391,8 @@ database/
 │
 tests/
 ├── Feature/....................... # Feature tests
-│   └── UserControllerTest.php
+│   ├── UserControllerTest.php
+│   └── UserTest.php
 └── Unit/.......................... # Unit tests
     ├── ArchitectureTest.php
     ├── UserPolicyTest.php
@@ -455,7 +464,7 @@ class UserPolicy
 - `page` - Page number (default: 1)
 
 ### **Testing**
-- ✅ Comprehensive test coverage (90 tests, 369 assertions)
+- ✅ Comprehensive test coverage (142 tests, 471 assertions)
 - ✅ 100% type coverage across all classes
 - ✅ Admin and normal user scenarios
 - ✅ Authorization testing
