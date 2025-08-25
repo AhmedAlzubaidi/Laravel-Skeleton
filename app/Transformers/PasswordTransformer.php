@@ -16,6 +16,6 @@ class PasswordTransformer implements Transformer
      */
     public function transform(DataProperty $property, mixed $value, TransformationContext $context): ?string
     {
-        return filled($value) ? Hash::make($value) : null;
+        return filled($value) && is_string($value) ? Hash::make($value) : null;
     }
 }
