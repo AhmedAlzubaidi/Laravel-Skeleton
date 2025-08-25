@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Users\Pages;
 
-use Filament\Actions\CreateAction;
 use Filament\Actions;
-use App\Filament\Resources\Users\UserResource;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\Users\UserResource;
 
-final class ListUsers extends ListRecords
+class ListUsers extends ListRecords
 {
     /**
      * @var class-string<UserResource>

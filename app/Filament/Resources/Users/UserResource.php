@@ -4,26 +4,27 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Users;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Resources\Users\Pages\ListUsers;
-use App\Filament\Resources\Users\Pages\EditUser;
-use Filament\Resources\Pages\PageRegistration;
+use BackedEnum;
 use App\Models\User;
 use Filament\Pages\Page;
 use App\Enums\UserStatus;
 use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
 use Spatie\Permission\Models\Role;
+use Filament\Actions\BulkActionGroup;
+use Filament\Forms\Components\Select;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Resources\Pages\PageRegistration;
+use App\Filament\Resources\Users\Pages\EditUser;
+use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Filament\Resources\Users\Pages\CreateUser;
 
-final class UserResource extends Resource
+class UserResource extends Resource
 {
     /**
      * @var class-string<User>
@@ -33,7 +34,7 @@ final class UserResource extends Resource
     /**
      * The navigation icon for the resource.
      */
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     /**
      * Builds the form for the resource.
