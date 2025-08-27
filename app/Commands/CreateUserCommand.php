@@ -15,11 +15,6 @@ class CreateUserCommand extends BaseData
 {
     /**
      * Create a new CreateUserCommand instance.
-     *
-     * @param  string  $username  The user's username
-     * @param  string  $email  The user's email address
-     * @param  string  $password  The user's password
-     * @param  UserStatus  $status  The user's status
      */
     public function __construct(
         public string $username,

@@ -11,12 +11,6 @@ class UserDto extends BaseData
 {
     /**
      * Create a new UserDto instance.
-     *
-     * @param  int  $id  The user's unique identifier
-     * @param  string  $username  The user's username
-     * @param  string  $email  The user's email address
-     * @param  string|null  $password  The user's password (nullable for security)
-     * @param  UserStatus  $status  The user's current status
      */
     public function __construct(
         public int $id,

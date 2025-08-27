@@ -16,11 +16,6 @@ class UpdateUserCommand extends BaseData
 {
     /**
      * Create a new UpdateUserCommand instance.
-     *
-     * @param  string  $username  The user's username
-     * @param  string  $email  The user's email address
-     * @param  ?string  $password  The user's password (nullable for security)
-     * @param  ?UserStatus  $status  The user's status
      */
     public function __construct(
         public string $username,
