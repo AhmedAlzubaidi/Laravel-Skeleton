@@ -14,7 +14,7 @@ enum UserStatus: string
     /**
      * Get all the values of the enum cases.
      *
-     * @return array<string>
+     * @return array<int, string>
      */
     public static function values(): array
     {
