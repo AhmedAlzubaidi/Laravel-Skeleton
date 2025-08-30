@@ -133,7 +133,6 @@ final readonly class UserController
 ### **BaseData Foundation**
 All Commands, Queries, and DTOs extend from `BaseData`, which provides:
 - **FormRequest-like validated() method**: Filters out optional fields that are not provided in the request
-- **Consistent validation behavior**: Behaves like Laravel's `validated()` method from FormRequest
 - **Differences**: One difference is that validated returns default values if they are not null
 - **Type safety**: Ensures consistent data handling across the application
 
