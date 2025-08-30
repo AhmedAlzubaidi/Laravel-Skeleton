@@ -7,6 +7,7 @@ namespace App\Queries;
 use App\Enums\UserStatus;
 use App\Foundation\BaseData;
 use Illuminate\Validation\Rules\Enum;
+use Spatie\LaravelData\Attributes\MapInputName;
 
 class GetUsersQuery extends BaseData
 {
@@ -17,7 +18,8 @@ class GetUsersQuery extends BaseData
         public ?string $username,
         public ?string $email,
         public ?UserStatus $status,
-        public int $per_page = 10,
+        #[MapInputName('per_page')]
+        public int $perPage = 10,
         public int $page = 1,
     ) {}
 
