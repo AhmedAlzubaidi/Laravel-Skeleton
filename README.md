@@ -132,8 +132,9 @@ final readonly class UserController
 
 ### **BaseData Foundation**
 All Commands, Queries, and DTOs extend from `BaseData`, which provides:
-- **Consistent toArray() behavior**: Filters out empty values based on validation rules
-- **FormRequest-like validation**: Behaves like Laravel's `validated()` method
+- **FormRequest-like validated() method**: Filters out optional fields that are not provided in the request
+- **Consistent validation behavior**: Behaves like Laravel's `validated()` method from FormRequest
+- **Differences**: One difference is that validated returns default values if they are not null
 - **Type safety**: Ensures consistent data handling across the application
 
 ## 🧩 Example: BaseData Implementation
@@ -145,16 +146,18 @@ abstract class BaseData extends Data
         return [];
     }
 
-    public final function toArray(): array
+    /**
+     * Get the instance as an array.
+     * Behave similar to laravel FormRequest validated() method.
+     * It filters out attributes that are not required and have no value.
+     */
+    public function validated(): array
     {
         $rules = static::rules();
         $data = parent::toArray();
 
         foreach ($data as $key => $value) {
-            if (
-                isset($rules[$key]) &&
-                $this->hasValidationRule($rules[$key], ['required', 'sometimes']) &&
-                !filled($value)) {
+            if ($this->attributeShouldBeRemoved($rules, $key, $value)) {
                 unset($data[$key]);
             }
         }
@@ -208,6 +211,7 @@ final class GetUsersQuery extends BaseData
         public ?string $username,
         public ?string $email,
         public ?UserStatus $status,
+        #[MapInputName('per_page')] // Maps 'per_page' input to 'perPage' property
         public int $perPage = 10,
         public int $page = 1,
     ) {}
