@@ -25,7 +25,8 @@ abstract class BaseData extends Data
 
     /**
      * Get the instance as an array.
-     * Behave as laravel FormRequest validated() method.
+     * Behave similar to laravel FormRequest validated() method.
+     * It filters out attributes that are not required and have no value.
      *
      * @return array<string, mixed>
      */
@@ -35,15 +36,25 @@ abstract class BaseData extends Data
         $data = parent::toArray();
 
         foreach ($data as $key => $value) {
-            if (
-                isset($rules[$key]) &&
-                $this->hasValidationRule($rules[$key], ['required', 'sometimes']) &&
-                ! filled($value)) {
+            if ($this->attributeShouldBeRemoved($rules, $key, $value)) {
                 unset($data[$key]);
             }
         }
 
         return $data;
+    }
+
+    /**
+     * Check if an attribute should be removed from the data.
+     *
+     * @param  array<string, string|array<int, mixed>>  $rules
+     */
+    private function attributeShouldBeRemoved(array $rules, string $key, mixed $value): bool
+    {
+        return ! isset($rules[$key]) ||
+        $this->hasValidationRule($rules[$key], ['sometimes']) &&
+        ! request()->filled($key) &&
+        ! filled($value);
     }
 
     /**
