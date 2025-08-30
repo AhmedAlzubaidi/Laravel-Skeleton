@@ -12,19 +12,13 @@ class GetUsersQuery extends BaseData
 {
     /**
      * Create a new GetUsersQuery instance.
-     *
-     * @param  ?string  $username  The username of the user to search for
-     * @param  ?string  $email  The email of the user to search for
-     * @param  ?UserStatus  $status  The status of the user to search for
-     * @param  ?int  $per_page  Number of items per page (default: 10)
-     * @param  ?int  $page  Page number (default: 1)
      */
     public function __construct(
         public ?string $username,
         public ?string $email,
         public ?UserStatus $status,
-        public ?int $per_page = 10,
-        public ?int $page = 1,
+        public int $per_page = 10,
+        public int $page = 1,
     ) {}
 
     /**
