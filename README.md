@@ -106,7 +106,7 @@ final readonly class UserController
             ->when($query->name, fn($q, $name) => $q->where('name', 'like', "%{$name}%"))
             ->when($query->email, fn($q, $email) => $q->where('email', 'like', "%{$email}%"))
             ->when($query->status, fn($q, $status) => $q->where('status', $status))
-            ->paginate($query->per_page ?? 10, ['*'], 'page', $query->page ?? 1);
+            ->paginate($query->perPage ?? 10, ['*'], 'page', $query->page ?? 1);
 
         return response()->json([
             ...UserDto::collect($users)->toArray(),
@@ -208,8 +208,8 @@ final class GetUsersQuery extends BaseData
         public ?string $username,
         public ?string $email,
         public ?UserStatus $status,
-        public ?int $per_page = 10,
-        public ?int $page = 1,
+        public int $perPage = 10,
+        public int $page = 1,
     ) {}
 
     public static function rules(): array
