@@ -44,7 +44,7 @@ class UserResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
+                TextInput::make('username')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('email')
@@ -72,7 +72,7 @@ class UserResource extends Resource
                 Select::make('role_id')
                     ->label('Role')
                     ->options(Role::all()->pluck('name', 'id'))
-                    ->required(),
+                    ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser)),
             ]);
     }
 
