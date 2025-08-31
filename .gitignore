@@ -19,6 +19,8 @@
 /storage/*.key
 /storage/pail
 /vendor
+/tests/Browser/Screenshots
+/coverage-report
 Homestead.json
 Homestead.yaml
 Thumbs.db
