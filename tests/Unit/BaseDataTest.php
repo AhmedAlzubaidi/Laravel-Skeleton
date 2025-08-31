@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
+use App\DTOs\UserDto;
+use App\Enums\UserStatus;
+use App\Foundation\BaseData;
+use App\Queries\GetUsersQuery;
 use App\Commands\CreateUserCommand;
 use App\Commands\UpdateUserCommand;
-use App\Foundation\BaseData;
-use App\DTOs\UserDto;
 use Illuminate\Support\Facades\Route;
-use App\Queries\GetUsersQuery;
-use App\Enums\UserStatus;
 
 describe('BaseData Abstract Class', function () {
     describe('rules() method', function () {
@@ -46,7 +46,7 @@ describe('BaseData Abstract Class', function () {
             expect($rules)->toHaveKey('email');
             expect($rules)->toHaveKey('password');
             expect($rules)->toHaveKey('status');
-            
+
             expect($rules['username'])->toContain('required');
             expect($rules['email'])->toContain('required');
             expect($rules['password'])->toContain('sometimes');
@@ -54,14 +54,14 @@ describe('BaseData Abstract Class', function () {
 
         it('returns validation rules for GetUsersQuery', function () {
             $rules = GetUsersQuery::rules();
-            
+
             expect($rules)->toBeArray();
             expect($rules)->toHaveKey('username');
             expect($rules)->toHaveKey('email');
             expect($rules)->toHaveKey('status');
             expect($rules)->toHaveKey('per_page');
             expect($rules)->toHaveKey('page');
-            
+
             expect($rules['username'])->toContain('sometimes');
             expect($rules['email'])->toContain('sometimes');
             expect($rules['status'])->toContain('sometimes');
@@ -77,9 +77,9 @@ describe('BaseData Abstract Class', function () {
                 password: 'password123',
                 status: UserStatus::ACTIVE
             );
-            
+
             $validated = $command->validated();
-            
+
             expect($validated)->toBeArray();
             expect($validated)->toHaveKey('username');
             expect($validated)->toHaveKey('email');
