@@ -18,8 +18,8 @@ use Filament\Forms\Components\Select;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Validation\Rules\Password;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Validation\Rules\Password;
 use Filament\Resources\Pages\PageRegistration;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
@@ -59,7 +59,7 @@ class UserResource extends Resource
                             ->mixedCase()
                             ->numbers()
                             ->symbols()
-                            ->uncompromised()
+                            ->uncompromised(),
                     ])
                     ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser)),
                 TextInput::make('password_confirmation')
