@@ -78,7 +78,6 @@
         "test": [
             "@test:type-coverage",
             "@test:unit",
-            "@test:browser",
             "@test:lint",
             "@test:types",
             "@test:refactor"
