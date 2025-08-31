@@ -83,7 +83,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
+                TextColumn::make('username'),
                 TextColumn::make('email'),
                 TextColumn::make('status'),
                 TextColumn::make('roles.name')
