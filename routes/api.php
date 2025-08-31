@@ -23,5 +23,5 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         return UserDto::from($request->user());
     });
 
-    Route::resource('users', UserController::class)->except(['create', 'edit']);
+    Route::apiResource('users', UserController::class);
 });
