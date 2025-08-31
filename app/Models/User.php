@@ -25,18 +25,6 @@ final class User extends Authenticatable implements FilamentUser, HasName, OAuth
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'username',
-        'email',
-        'password',
-        'status',
-    ];
-
-    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>

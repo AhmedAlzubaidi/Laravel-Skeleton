@@ -273,17 +273,6 @@ describe('User Model', function () {
     });
 
     describe('Model Attributes and Casting', function () {
-        it('has correct fillable attributes', function () {
-            $user = new User();
-
-            expect($user->getFillable())->toBe([
-                'username',
-                'email',
-                'password',
-                'status',
-            ]);
-        });
-
         it('has correct hidden attributes', function () {
             $user = new User();
 
