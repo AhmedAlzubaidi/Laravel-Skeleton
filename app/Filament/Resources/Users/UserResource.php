@@ -18,6 +18,7 @@ use Filament\Forms\Components\Select;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Validation\Rules\Password;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Resources\Pages\PageRegistration;
 use App\Filament\Resources\Users\Pages\EditUser;
@@ -52,8 +53,18 @@ class UserResource extends Resource
                     ->maxLength(255),
                 TextInput::make('password')
                     ->password()
-                    ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser))
-                    ->maxLength(255),
+                    ->rules([
+                        'confirmed',
+                        Password::min(8)
+                            ->mixedCase()
+                            ->numbers()
+                            ->symbols()
+                            ->uncompromised()
+                    ])
+                    ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser)),
+                TextInput::make('password_confirmation')
+                    ->password()
+                    ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser)),
                 Select::make('status')
                     ->options(UserStatus::class)
                     ->default(UserStatus::ACTIVE)
