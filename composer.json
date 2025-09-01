@@ -28,7 +28,6 @@
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8.2",
         "pestphp/pest": "^4.0.4",
-        "pestphp/pest-plugin-browser": "^4.0.3",
         "pestphp/pest-plugin-type-coverage": "^4.0.2",
         "rector/rector": "^2.1.4"
     },
@@ -71,7 +70,6 @@
             "pint --test -v",
             "npm run test:lint"
         ],
-        "test:browser": "pest --parallel --group=browser",
         "test:unit": "pest --parallel --coverage --exactly=100.0 --exclude-group=browser",
         "test:types": "phpstan",
         "test:refactor": "rector --dry-run",
