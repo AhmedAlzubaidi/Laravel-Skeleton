@@ -16,7 +16,7 @@ describe('User Model', function () {
 
     describe('findForPassport', function () {
         it('finds user by username', function () {
-            $user = User::factory()->create(['username' => 'testuser']);
+            $user      = User::factory()->create(['username' => 'testuser']);
 
             $foundUser = (new User())->findForPassport('testuser');
 
@@ -26,7 +26,7 @@ describe('User Model', function () {
         });
 
         it('finds user by email', function () {
-            $user = User::factory()->create(['email' => 'test@example.com']);
+            $user      = User::factory()->create(['email' => 'test@example.com']);
 
             $foundUser = (new User())->findForPassport('test@example.com');
 
@@ -36,9 +36,9 @@ describe('User Model', function () {
         });
 
         it('finds user by username when both username and email match', function () {
-            $user = User::factory()->create([
+            $user      = User::factory()->create([
                 'username' => 'testuser',
-                'email' => 'testuser@example.com',
+                'email'    => 'testuser@example.com',
             ]);
 
             $foundUser = (new User())->findForPassport('testuser');
@@ -49,9 +49,9 @@ describe('User Model', function () {
         });
 
         it('finds user by email when both username and email match', function () {
-            $user = User::factory()->create([
+            $user      = User::factory()->create([
                 'username' => 'testuser',
-                'email' => 'testuser@example.com',
+                'email'    => 'testuser@example.com',
             ]);
 
             $foundUser = (new User())->findForPassport('testuser@example.com');
@@ -74,7 +74,7 @@ describe('User Model', function () {
         });
 
         it('handles case sensitive search', function () {
-            $user = User::factory()->create(['username' => 'TestUser']);
+            $user      = User::factory()->create(['username' => 'TestUser']);
 
             $foundUser = (new User())->findForPassport('TestUser');
 
@@ -83,7 +83,7 @@ describe('User Model', function () {
         });
 
         it('handles email case sensitivity', function () {
-            $user = User::factory()->create(['email' => 'Test@Example.com']);
+            $user      = User::factory()->create(['email' => 'Test@Example.com']);
 
             $foundUser = (new User())->findForPassport('Test@Example.com');
 
@@ -104,7 +104,7 @@ describe('User Model', function () {
         });
 
         it('handles special characters in username', function () {
-            $user = User::factory()->create(['username' => 'test_user-123']);
+            $user      = User::factory()->create(['username' => 'test_user-123']);
 
             $foundUser = (new User())->findForPassport('test_user-123');
 
@@ -113,7 +113,7 @@ describe('User Model', function () {
         });
 
         it('handles special characters in email', function () {
-            $user = User::factory()->create(['email' => 'test+tag@example.com']);
+            $user      = User::factory()->create(['email' => 'test+tag@example.com']);
 
             $foundUser = (new User())->findForPassport('test+tag@example.com');
 
@@ -124,8 +124,8 @@ describe('User Model', function () {
 
     describe('canAccessPanel', function () {
         it('allows admin users to access panel', function () {
-            $admin = User::where('username', 'admin')->first();
-            $panel = new Panel('admin');
+            $admin     = User::where('username', 'admin')->first();
+            $panel     = new Panel('admin');
 
             $canAccess = $admin->canAccessPanel($panel);
 
@@ -135,33 +135,33 @@ describe('User Model', function () {
         it('denies normal users from accessing panel', function () {
             $normalUser = User::factory()->create();
             $normalUser->assignRole('user');
-            $panel = new Panel('admin');
+            $panel      = new Panel('admin');
 
-            $canAccess = $normalUser->canAccessPanel($panel);
+            $canAccess  = $normalUser->canAccessPanel($panel);
 
             expect($canAccess)->toBeFalse();
         });
 
         it('denies users without roles from accessing panel', function () {
             $userWithoutRole = User::factory()->create();
-            $panel = new Panel('admin');
+            $panel           = new Panel('admin');
 
-            $canAccess = $userWithoutRole->canAccessPanel($panel);
+            $canAccess       = $userWithoutRole->canAccessPanel($panel);
 
             expect($canAccess)->toBeFalse();
         });
 
         it('works with different panel names', function () {
-            $admin = User::where('username', 'admin')->first();
+            $admin       = User::where('username', 'admin')->first();
             $customPanel = new Panel('custom');
 
-            $canAccess = $admin->canAccessPanel($customPanel);
+            $canAccess   = $admin->canAccessPanel($customPanel);
 
             expect($canAccess)->toBeTrue();
         });
 
         it('works with multiple panels', function () {
-            $admin = User::where('username', 'admin')->first();
+            $admin  = User::where('username', 'admin')->first();
             $panel1 = new Panel('admin');
             $panel2 = new Panel('dashboard');
             $panel3 = new Panel('settings');
@@ -174,9 +174,9 @@ describe('User Model', function () {
         it('consistently denies access for non-admin users across panels', function () {
             $normalUser = User::factory()->create();
             $normalUser->assignRole('user');
-            $panel1 = new Panel('admin');
-            $panel2 = new Panel('dashboard');
-            $panel3 = new Panel('settings');
+            $panel1     = new Panel('admin');
+            $panel2     = new Panel('dashboard');
+            $panel3     = new Panel('settings');
 
             expect($normalUser->canAccessPanel($panel1))->toBeFalse();
             expect($normalUser->canAccessPanel($panel2))->toBeFalse();
@@ -186,7 +186,7 @@ describe('User Model', function () {
 
     describe('isAdmin', function () {
         it('returns true for admin users', function () {
-            $admin = User::where('username', 'admin')->first();
+            $admin   = User::where('username', 'admin')->first();
 
             $isAdmin = $admin->isAdmin();
 
@@ -197,7 +197,7 @@ describe('User Model', function () {
             $normalUser = User::factory()->create();
             $normalUser->assignRole('user');
 
-            $isAdmin = $normalUser->isAdmin();
+            $isAdmin    = $normalUser->isAdmin();
 
             expect($isAdmin)->toBeFalse();
         });
@@ -205,7 +205,7 @@ describe('User Model', function () {
         it('returns false for users without roles', function () {
             $userWithoutRole = User::factory()->create();
 
-            $isAdmin = $userWithoutRole->isAdmin();
+            $isAdmin         = $userWithoutRole->isAdmin();
 
             expect($isAdmin)->toBeFalse();
         });
@@ -214,7 +214,7 @@ describe('User Model', function () {
             $userWithMultipleRoles = User::factory()->create();
             $userWithMultipleRoles->assignRole('user');
 
-            $isAdmin = $userWithMultipleRoles->isAdmin();
+            $isAdmin               = $userWithMultipleRoles->isAdmin();
 
             expect($isAdmin)->toBeFalse();
         });
@@ -224,7 +224,7 @@ describe('User Model', function () {
             $userWithMultipleRoles->assignRole('user');
             $userWithMultipleRoles->assignRole('admin');
 
-            $isAdmin = $userWithMultipleRoles->isAdmin();
+            $isAdmin               = $userWithMultipleRoles->isAdmin();
 
             expect($isAdmin)->toBeTrue();
         });
@@ -232,7 +232,7 @@ describe('User Model', function () {
 
     describe('getFilamentName', function () {
         it('returns username as filament name', function () {
-            $user = User::factory()->create(['username' => 'testuser']);
+            $user         = User::factory()->create(['username' => 'testuser']);
 
             $filamentName = $user->getFilamentName();
 
@@ -240,7 +240,7 @@ describe('User Model', function () {
         });
 
         it('returns username with special characters', function () {
-            $user = User::factory()->create(['username' => 'test_user-123']);
+            $user         = User::factory()->create(['username' => 'test_user-123']);
 
             $filamentName = $user->getFilamentName();
 
@@ -248,7 +248,7 @@ describe('User Model', function () {
         });
 
         it('returns username with numbers', function () {
-            $user = User::factory()->create(['username' => 'user123']);
+            $user         = User::factory()->create(['username' => 'user123']);
 
             $filamentName = $user->getFilamentName();
 
@@ -256,7 +256,7 @@ describe('User Model', function () {
         });
 
         it('returns username with mixed case', function () {
-            $user = User::factory()->create(['username' => 'TestUser']);
+            $user         = User::factory()->create(['username' => 'TestUser']);
 
             $filamentName = $user->getFilamentName();
 
@@ -264,7 +264,7 @@ describe('User Model', function () {
         });
 
         it('returns admin username correctly', function () {
-            $admin = User::where('username', 'admin')->first();
+            $admin        = User::where('username', 'admin')->first();
 
             $filamentName = $admin->getFilamentName();
 
@@ -356,8 +356,8 @@ describe('User Model', function () {
         });
 
         it('admin user can access panel', function () {
-            $admin = (new User())->findForPassport('admin');
-            $panel = new Panel('admin');
+            $admin     = (new User())->findForPassport('admin');
+            $panel     = new Panel('admin');
 
             $canAccess = $admin->canAccessPanel($panel);
 
@@ -374,14 +374,14 @@ describe('User Model', function () {
 
         it('complete user workflow', function () {
             // Create a user
-            $user = User::factory()->create([
+            $user             = User::factory()->create([
                 'username' => 'testuser',
-                'email' => 'test@example.com',
+                'email'    => 'test@example.com',
             ]);
             $user->assignRole('user');
 
             // Test findForPassport
-            $foundUser = (new User())->findForPassport('testuser');
+            $foundUser        = (new User())->findForPassport('testuser');
             expect($foundUser)->toBeInstanceOf(User::class)
                 ->and($foundUser->id)->toBe($user->id);
 
@@ -394,7 +394,7 @@ describe('User Model', function () {
             expect($user->isAdmin())->toBeFalse();
 
             // Test canAccessPanel
-            $panel = new Panel('admin');
+            $panel            = new Panel('admin');
             expect($user->canAccessPanel($panel))->toBeFalse();
 
             // Test getFilamentName
@@ -411,7 +411,7 @@ describe('User Model', function () {
         });
 
         it('admin user has all required capabilities', function () {
-            $admin = User::where('username', 'admin')->first();
+            $admin            = User::where('username', 'admin')->first();
 
             // Test all admin capabilities
             expect($admin->isAdmin())->toBeTrue();
@@ -420,7 +420,7 @@ describe('User Model', function () {
             expect($admin->getFilamentName())->toBe('admin');
 
             // Test findForPassport works
-            $foundUser = (new User())->findForPassport('admin');
+            $foundUser        = (new User())->findForPassport('admin');
             expect($foundUser)->toBeInstanceOf(User::class)
                 ->and($foundUser->id)->toBe($admin->id);
 
@@ -432,7 +432,7 @@ describe('User Model', function () {
 
     describe('Edge Cases and Error Handling', function () {
         it('handles empty username gracefully', function () {
-            $user = User::factory()->create(['username' => '']);
+            $user         = User::factory()->create(['username' => '']);
 
             $filamentName = $user->getFilamentName();
 
@@ -441,7 +441,7 @@ describe('User Model', function () {
 
         it('handles very long usernames', function () {
             $longUsername = str_repeat('a', 40);
-            $user = User::factory()->create(['username' => $longUsername]);
+            $user         = User::factory()->create(['username' => $longUsername]);
 
             $filamentName = $user->getFilamentName();
 
@@ -449,7 +449,7 @@ describe('User Model', function () {
         });
 
         it('handles usernames with unicode characters', function () {
-            $user = User::factory()->create(['username' => 'tëstüser']);
+            $user         = User::factory()->create(['username' => 'tëstüser']);
 
             $filamentName = $user->getFilamentName();
 
@@ -457,7 +457,7 @@ describe('User Model', function () {
         });
 
         it('handles email with unicode characters', function () {
-            $user = User::factory()->create(['email' => 'tëst@exämple.com']);
+            $user      = User::factory()->create(['email' => 'tëst@exämple.com']);
 
             $foundUser = (new User())->findForPassport('tëst@exämple.com');
 

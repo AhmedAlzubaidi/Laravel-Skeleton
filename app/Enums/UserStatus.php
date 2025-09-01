@@ -6,10 +6,10 @@ namespace App\Enums;
 
 enum UserStatus: string
 {
-    case ACTIVE = 'active';
-    case INACTIVE = 'inactive';
+    case ACTIVE    = 'active';
+    case INACTIVE  = 'inactive';
     case SUSPENDED = 'suspended';
-    case PENDING = 'pending';
+    case PENDING   = 'pending';
 
     /**
      * Get all the values of the enum cases.

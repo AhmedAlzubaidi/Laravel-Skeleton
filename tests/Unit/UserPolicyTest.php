@@ -7,19 +7,19 @@ use App\Policies\UserPolicy;
 
 describe('UserPolicy', function () {
     beforeEach(function () {
-        $this->policy = new UserPolicy();
+        $this->policy      = new UserPolicy();
 
         // Create mock users without database
-        $this->admin = new User();
-        $this->admin->id = 1;
+        $this->admin       = new User();
+        $this->admin->id   = 1;
         $this->admin->name = 'admin';
 
-        $this->user1 = new User();
-        $this->user1->id = 2;
+        $this->user1       = new User();
+        $this->user1->id   = 2;
         $this->user1->name = 'User One';
 
-        $this->user2 = new User();
-        $this->user2->id = 3;
+        $this->user2       = new User();
+        $this->user2->id   = 3;
         $this->user2->name = 'User Two';
     });
 
@@ -193,10 +193,10 @@ describe('UserPolicy', function () {
 
     describe('Method Signatures', function () {
         it('has correct method signatures', function () {
-            $reflection = new ReflectionClass($this->policy);
+            $reflection        = new ReflectionClass($this->policy);
 
             // Check restore method
-            $restoreMethod = $reflection->getMethod('restore');
+            $restoreMethod     = $reflection->getMethod('restore');
             expect($restoreMethod->getReturnType()->getName())->toBe('bool');
             expect($restoreMethod->getNumberOfParameters())->toBe(0);
 

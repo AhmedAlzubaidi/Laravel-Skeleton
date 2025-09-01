@@ -1,11 +1,5 @@
 {
     "preset": "laravel",
-    "notPath": [
-        "tests/TestCase.php",
-        "app/Foundation/BaseData.php",
-        "app/Filament",
-        "config"
-    ],
     "rules": {
         "array_push": true,
         "backtick_to_shell_exec": true,
@@ -28,12 +22,6 @@
         "ordered_imports": {
             "sort_algorithm": "length",
             "imports_order": ["class", "function", "const"]
-        },
-        "binary_operator_spaces": {
-            "operators": {
-                "=>": "align_single_space_by_scope",
-                "=": "align_single_space_by_scope"
-            }
         },
         "ordered_class_elements": {
             "order": [

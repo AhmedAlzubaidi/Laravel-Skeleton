@@ -62,12 +62,16 @@
         ],
         "lint": [
             "pint",
+            "pint config --config config/pint.json",
+            "pint app/Filament --config app/Filament/pint.json",
             "npm run lint"
         ],
         "refactor": "rector",
         "test:type-coverage": "pest --type-coverage --min=100",
         "test:lint": [
             "pint --test -v",
+            "pint config --config config/pint.json --test -v",
+            "pint app/Filament --config app/Filament/pint.json --test -v",
             "npm run test:lint"
         ],
         "test:unit": "pest --parallel --coverage --exactly=100.0 --exclude-group=browser",

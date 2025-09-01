@@ -71,7 +71,7 @@ describe('BaseData Abstract Class', function () {
     describe('validated() method', function () {
         it('filters out optional fields when rules are defined', function () {
             // Create a command with optional fields
-            $command = new CreateUserCommand(
+            $command   = new CreateUserCommand(
                 username: 'testuser',
                 email: 'test@example.com',
                 password: 'password123',
@@ -98,7 +98,7 @@ describe('BaseData Abstract Class', function () {
                 status: UserStatus::ACTIVE
             );
 
-            $array = $userDto->toArray();
+            $array   = $userDto->toArray();
 
             expect($array)->toBeArray();
             expect($array)->toHaveKey('id');
@@ -116,7 +116,7 @@ describe('BaseData Abstract Class', function () {
                 status: UserStatus::ACTIVE
             );
 
-            $array = $command->toArray();
+            $array   = $command->toArray();
 
             expect($array)->toBeArray();
             expect($array)->toHaveKey('username');
