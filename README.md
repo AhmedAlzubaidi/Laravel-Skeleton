@@ -90,7 +90,10 @@ php artisan serve
 use App\Http\Controllers\UserController;
 
 Route::middleware('auth:api')->prefix('v1')->group(function () {
-    Route::resource('users', UserController::class)->except(['create', 'edit']);
+    Route::get('/user', function (Request $request) {
+        return UserDto::from($request->user());
+    });
+    Route::apiResource('users', UserController::class);
 });
 ```
 
@@ -103,10 +106,10 @@ final readonly class UserController
         Gate::authorize('viewAny', User::class);
         
         $users = User::query()
-            ->when($query->name, fn($q, $name) => $q->where('name', 'like', "%{$name}%"))
+            ->when($query->username, fn($q, $username) => $q->where('username', 'like', "%{$username}%"))
             ->when($query->email, fn($q, $email) => $q->where('email', 'like', "%{$email}%"))
             ->when($query->status, fn($q, $status) => $q->where('status', $status))
-            ->paginate($query->perPage ?? 10, ['*'], 'page', $query->page ?? 1);
+            ->paginate($query->perPage, ['*'], 'page', $query->page);
 
         return response()->json([
             ...UserDto::collect($users)->toArray(),
@@ -117,11 +120,8 @@ final readonly class UserController
     public function store(CreateUserCommand $command): JsonResponse
     {
         Gate::authorize('create', User::class);
-        
-        $commandData = $command->toArray();
-        $commandData['password'] = Hash::make($command->password);
-        $user = User::create($commandData);
-        
+        $user = User::create($command->validated());
+
         return response()->json([
             'data' => UserDto::from($user),
             'message' => __('User created successfully'),
@@ -272,7 +272,7 @@ final class UserDto extends BaseData
 - [`spatie/laravel-health`](https://github.com/spatie/laravel-health) – Health and system checks
 
 ### **Frontend Tools**
-Although this project is primarily intended to serve as an API, I’ve included Prettier just in case — it doesn’t hurt to have clean code. 🙂
+Although this project is primarily intended to serve as an API, I've included Prettier just in case — it doesn't hurt to have clean code. 🙂
 - [`vite`](https://vitejs.dev/) – Frontend build tool
 - [`tailwindcss`](https://tailwindcss.com/) – Utility-first CSS framework
 - [`prettier`](https://prettier.io/) – Code formatter
@@ -440,7 +440,7 @@ class UserPolicy
 - ✅ Role-based access control
 - ✅ User status management (Active, Inactive, Suspended, Pending)
 - ✅ Email and password validation
-- ✅ Filtering by name, email, and status
+- ✅ Filtering by username, email, and status
 - ✅ Pagination support (configurable per_page and page parameters)
 - ✅ Status update restriction (admin-only)
 

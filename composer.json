@@ -74,7 +74,7 @@
             "pint app/Filament --config app/Filament/pint.json --test -v",
             "npm run test:lint"
         ],
-        "test:unit": "pest --parallel --coverage --exactly=100.0 --exclude-group=browser",
+        "test:unit": "pest --parallel --coverage --exactly=100.0",
         "test:types": "phpstan",
         "test:refactor": "rector --dry-run",
         "test": [
