@@ -13,9 +13,9 @@ While originally built for personal use, this project is **open source and commu
 - Composer
 
 ### Testing Requirements
-For running tests and code coverage, you'll need these PHP extensions:
+For running tests, you'll need these PHP extensions:
 - **ext-pdo_sqlite**: For in-memory database testing
-- **ext-xdebug**: For code coverage reports
+- **ext-xdebug** or **ext-pcov**: For code coverage reports (only needed when running coverage commands)
 
 ### Project Installation
 ```bash
@@ -49,6 +49,9 @@ php artisan ide-helper:models --write-mixin
 
 # Run tests
 composer test
+
+# Generate test coverage report
+composer test:coverage
 
 # Format code
 composer lint
@@ -330,6 +333,7 @@ describe('User Controller - Normal Users', function () {
 - **Error handling** (404, 403, 422 status codes)
 - **Architecture compliance** testing
 - **Unit tests** for UserStatus enum and UserPolicy
+- **Coverage reports** available via `composer test:coverage` command
 
 </details>
 
