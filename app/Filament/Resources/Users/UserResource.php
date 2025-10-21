@@ -12,7 +12,6 @@ use Filament\Tables\Table;
 use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
-use Spatie\Permission\Models\Role;
 use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
 use Filament\Actions\DeleteBulkAction;
@@ -69,9 +68,9 @@ class UserResource extends Resource
                     ->options(UserStatus::class)
                     ->default(UserStatus::ACTIVE)
                     ->required(false),
-                Select::make('role_id')
+                Select::make('roles')
                     ->label('Role')
-                    ->options(Role::all()->pluck('name', 'id'))
+                    ->relationship('roles', 'name')
                     ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser)),
             ]);
     }

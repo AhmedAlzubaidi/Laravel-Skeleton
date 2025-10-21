@@ -32,7 +32,7 @@ class GetUsersQuery extends BaseData
     {
         return [
             'username' => ['sometimes', 'required', 'string', 'max:40'],
-            'email'    => ['sometimes', 'required', 'email', 'exists:users,email'],
+            'email'    => ['sometimes', 'required', 'email'],
             'status'   => ['sometimes', 'required', new Enum(UserStatus::class)],
             'per_page' => ['sometimes', 'required', 'integer', 'min:1', 'max:100'],
             'page'     => ['sometimes', 'required', 'integer', 'min:1'],

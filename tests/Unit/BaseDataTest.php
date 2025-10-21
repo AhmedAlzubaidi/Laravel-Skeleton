@@ -104,7 +104,7 @@ describe('BaseData Abstract Class', function () {
             expect($array)->toHaveKey('id');
             expect($array)->toHaveKey('username');
             expect($array)->toHaveKey('email');
-            expect($array)->toHaveKey('password');
+            expect($array)->not->toHaveKey('password'); // Password is hidden via #[Hidden] attribute
             expect($array)->toHaveKey('status');
         });
 
