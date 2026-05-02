@@ -33,15 +33,17 @@ abstract class BaseData extends Data
     public function validated(): array
     {
         $rules = static::rules();
-        $data = parent::toArray();
+        $validated = [];
 
-        foreach ($data as $key => $value) {
-            if ($this->attributeShouldBeRemoved($rules, $key, $value)) {
-                unset($data[$key]);
+        foreach (parent::toArray() as $key => $value) {
+            $key = (string) $key;
+
+            if (! $this->attributeShouldBeRemoved($rules, $key, $value)) {
+                $validated[$key] = $value;
             }
         }
 
-        return $data;
+        return $validated;
     }
 
     /**
@@ -68,7 +70,7 @@ abstract class BaseData extends Data
         $rules = is_string($ruleSet) ? explode('|', $ruleSet) : $ruleSet;
 
         return array_intersect(
-            array_filter($rules, 'is_scalar'),
+            array_filter($rules, is_scalar(...)),
             $needles
         ) !== [];
     }
