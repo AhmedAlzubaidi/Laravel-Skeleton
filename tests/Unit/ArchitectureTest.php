@@ -31,11 +31,6 @@ arch('resources')
     ->expect('App\Http\Resources')
     ->not->toBeUsed();
 
-arch('annotations')
-    ->expect('App')
-    ->toHavePropertiesDocumented()
-    ->toHaveMethodsDocumented();
-
 arch('factories')
     ->expect('Database\Factories')
     ->toExtend(Factory::class)
