@@ -8,7 +8,6 @@ use App\Foundation\BaseData;
 use App\Queries\GetUsersQuery;
 use App\Commands\CreateUserCommand;
 use App\Commands\UpdateUserCommand;
-use Illuminate\Support\Facades\Route;
 
 describe('BaseData Abstract Class', function () {
     describe('rules() method', function () {
@@ -34,11 +33,6 @@ describe('BaseData Abstract Class', function () {
         });
 
         it('returns validation rules for UpdateUserCommand', function () {
-            // Mock the route context for UpdateUserCommand
-            Route::shouldReceive('input')
-                ->with('user')
-                ->andReturn('1');
-
             $rules = UpdateUserCommand::rules();
 
             expect($rules)->toBeArray();

@@ -6,10 +6,11 @@ namespace App\Commands;
 
 use App\Enums\UserStatus;
 use App\Foundation\BaseData;
+use App\Validation\Password;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Enum;
 use App\Transformers\PasswordTransformer;
-use Illuminate\Validation\Rules\Password;
 use Spatie\LaravelData\Attributes\WithTransformer;
 
 class UpdateUserCommand extends BaseData
@@ -28,26 +29,18 @@ class UpdateUserCommand extends BaseData
     /**
      * Get the validation rules for the command.
      *
+     * Resolved from the {user} route parameter bound by Route::apiResource('users', ...).
+     *
      * @return array<string, array<int, mixed>>
      */
     public static function rules(): array
     {
-        /** @var string $userId */
-        $userId = Route::input('user');
+        $userId = Route::current()?->parameter('user');
 
         return [
-            'username' => ['required', 'string', 'max:40', 'unique:users,username,'.$userId],
-            'email'    => ['required', 'email', 'unique:users,email,'.$userId],
-            'password' => [
-                'sometimes',
-                'required',
-                'confirmed',
-                Password::min(8)
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()
-                    ->uncompromised(), // Checks against data leaks via HaveIBeenPwned
-            ],
+            'username' => ['required', 'string', 'max:40', Rule::unique('users', 'username')->ignore($userId)],
+            'email'    => ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
+            'password' => ['sometimes', 'required', 'confirmed', Password::strong()],
             'status'   => ['sometimes', 'required', new Enum(UserStatus::class)],
         ];
     }
