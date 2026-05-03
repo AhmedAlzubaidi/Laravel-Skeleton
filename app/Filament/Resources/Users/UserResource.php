@@ -9,6 +9,7 @@ use App\Models\User;
 use Filament\Pages\Page;
 use App\Enums\UserStatus;
 use Filament\Tables\Table;
+use App\Validation\Password;
 use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
@@ -18,7 +19,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Validation\Rules\Password;
 use Filament\Resources\Pages\PageRegistration;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
@@ -52,14 +52,7 @@ class UserResource extends Resource
                     ->maxLength(255),
                 TextInput::make('password')
                     ->password()
-                    ->rules([
-                        'confirmed',
-                        Password::min(8)
-                            ->mixedCase()
-                            ->numbers()
-                            ->symbols()
-                            ->uncompromised(),
-                    ])
+                    ->rules(['confirmed', Password::strong()])
                     ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser)),
                 TextInput::make('password_confirmation')
                     ->password()
@@ -67,11 +60,11 @@ class UserResource extends Resource
                 Select::make('status')
                     ->options(UserStatus::class)
                     ->default(UserStatus::ACTIVE)
-                    ->required(false),
+                    ->required(),
                 Select::make('roles')
                     ->label('Role')
                     ->relationship('roles', 'name')
-                    ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser)),
+                    ->required(),
             ]);
     }
 
@@ -84,7 +77,10 @@ class UserResource extends Resource
             ->columns([
                 TextColumn::make('username'),
                 TextColumn::make('email'),
-                TextColumn::make('status'),
+                TextColumn::make('status')
+                    ->badge()
+                    ->formatStateUsing(fn (UserStatus $state): string => $state->label())
+                    ->color(fn (UserStatus $state): string => $state->color()),
                 TextColumn::make('roles.name')
                     ->label('Role')
                     ->default('No Role'),
