@@ -6,9 +6,9 @@ namespace App\Commands;
 
 use App\Enums\UserStatus;
 use App\Foundation\BaseData;
+use App\Validation\Password;
 use Illuminate\Validation\Rules\Enum;
 use App\Transformers\PasswordTransformer;
-use Illuminate\Validation\Rules\Password;
 use Spatie\LaravelData\Attributes\WithTransformer;
 
 class CreateUserCommand extends BaseData
@@ -34,15 +34,7 @@ class CreateUserCommand extends BaseData
         return [
             'username' => ['required', 'string', 'max:40', 'unique:users,username'],
             'email'    => ['required', 'email', 'unique:users,email'],
-            'password' => [
-                'required',
-                'confirmed',
-                Password::min(8)
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()
-                    ->uncompromised(), // Checks against data leaks via HaveIBeenPwned
-            ],
+            'password' => ['required', 'confirmed', Password::strong()],
             'status'   => ['sometimes', 'required', new Enum(UserStatus::class)],
         ];
     }
