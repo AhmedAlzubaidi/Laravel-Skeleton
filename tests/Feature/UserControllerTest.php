@@ -394,15 +394,8 @@ describe('User Controller - Admin Users', function () {
             $response = $this->deleteJson("/api/v1/users/{$this->user->id}");
 
             $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'data' => [
-                        'id',
-                        'username',
-                        'email',
-                        'status',
-                    ],
-                    'message',
-                ]);
+                ->assertJsonStructure(['message'])
+                ->assertJsonMissingPath('data');
 
             $this->assertDatabaseMissing('users', [
                 'id' => $this->user->id,

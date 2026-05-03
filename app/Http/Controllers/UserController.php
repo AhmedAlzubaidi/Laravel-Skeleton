@@ -71,7 +71,7 @@ final readonly class UserController
         $user = User::findOrFail($id);
         Gate::authorize('update', $user);
 
-        if (request()->filled('status') && $command->status !== $user->status) {
+        if ($command->status instanceof UserStatus && $command->status !== $user->status) {
             Gate::authorize('updateStatus', $user);
         }
 
@@ -94,7 +94,6 @@ final readonly class UserController
         $user->delete();
 
         return response()->json([
-            'data'    => UserDto::from($user),
             'message' => __('User deleted successfully'),
         ]);
     }
