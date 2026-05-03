@@ -10,9 +10,6 @@ use Spatie\LaravelData\Attributes\Hidden;
 
 class UserDto extends BaseData
 {
-    /**
-     * Create a new UserDto instance.
-     */
     public function __construct(
         public int $id,
         public string $username,

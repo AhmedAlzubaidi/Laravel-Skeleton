@@ -13,9 +13,6 @@ use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 
 class Login extends BaseLogin
 {
-    /**
-     * Get the login form component.
-     */
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -27,9 +24,6 @@ class Login extends BaseLogin
             ->statePath('data');
     }
 
-    /**
-     * Authenticate the user.
-     */
     public function authenticate(): ?LoginResponse
     {
         try {
@@ -41,9 +35,6 @@ class Login extends BaseLogin
         }
     }
 
-    /**
-     * Get the login form component.
-     */
     public function getLoginFormComponent(): Component
     {
         return TextInput::make('login')
@@ -54,9 +45,6 @@ class Login extends BaseLogin
             ->extraInputAttributes(['tabindex' => 1]);
     }
 
-    /**
-     * Get the credentials from the form data.
-     */
     protected function getCredentialsFromFormData(array $data): array
     {
         $login_type = filter_var($data['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';

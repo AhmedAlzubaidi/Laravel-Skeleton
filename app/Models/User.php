@@ -34,41 +34,27 @@ final class User extends Authenticatable implements FilamentUser, HasName, OAuth
         'remember_token',
     ];
 
-    /**
-     * Find the user instance for the given username.
-     */
     public function findForPassport(string $username): ?self
     {
         return $this->where('username', $username)->orWhere('email', $username)->first();
     }
 
-    /**
-     * Get the user's name for Filament.
-     */
     public function getFilamentName(): string
     {
         return "{$this->username}";
     }
 
-    /**
-     * Check if the user can access the panel.
-     */
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->isAdmin();
     }
 
-    /**
-     * Check if the user is an admin.
-     */
     public function isAdmin(): bool
     {
         return $this->hasRole('admin');
     }
 
     /**
-     * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     public function casts(): array

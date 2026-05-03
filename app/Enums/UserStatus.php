@@ -12,8 +12,6 @@ enum UserStatus: string
     case PENDING   = 'pending';
 
     /**
-     * Get all the values of the enum cases.
-     *
      * @return array<int, string>
      */
     public static function values(): array
@@ -21,9 +19,6 @@ enum UserStatus: string
         return array_map(fn (UserStatus $status) => $status->value, self::cases());
     }
 
-    /**
-     * Get the label of the enum case.
-     */
     public function label(): string
     {
         return match ($this) {
@@ -34,9 +29,6 @@ enum UserStatus: string
         };
     }
 
-    /**
-     * Get the color of the enum case.
-     */
     public function color(): string
     {
         return match ($this) {

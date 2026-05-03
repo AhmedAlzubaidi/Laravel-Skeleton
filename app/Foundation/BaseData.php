@@ -6,16 +6,9 @@ namespace App\Foundation;
 
 use Spatie\LaravelData\Data;
 
-/**
- * Base class for all Commands, Queries, and DTOs.
- *
- * This class ensures toArray() method is final and behaves as laravel FormRequest validated() method.
- */
 abstract class BaseData extends Data
 {
     /**
-     * Get the validation rules for the data object.
-     *
      * @return array<string, string|array<int, mixed>>
      */
     public static function rules(): array
@@ -24,10 +17,6 @@ abstract class BaseData extends Data
     }
 
     /**
-     * Get the instance as an array.
-     * Behave similar to laravel FormRequest validated() method.
-     * It filters out attributes that are not required and have no value.
-     *
      * @return array<string, mixed>
      */
     public function validated(): array
@@ -47,8 +36,6 @@ abstract class BaseData extends Data
     }
 
     /**
-     * Check if an attribute should be removed from the data.
-     *
      * @param  array<string, string|array<int, mixed>>  $rules
      */
     private function attributeShouldBeRemoved(array $rules, string $key, mixed $value): bool
@@ -60,8 +47,6 @@ abstract class BaseData extends Data
     }
 
     /**
-     * Check if a given rule set includes any of the specified rule names.
-     *
      * @param  string|array<int, mixed>  $ruleSet
      * @param  array<int, string>  $needles
      */

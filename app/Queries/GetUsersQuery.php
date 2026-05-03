@@ -11,9 +11,6 @@ use Spatie\LaravelData\Attributes\MapInputName;
 
 class GetUsersQuery extends BaseData
 {
-    /**
-     * Create a new GetUsersQuery instance.
-     */
     public function __construct(
         public ?string $username,
         public ?string $email,
@@ -24,8 +21,6 @@ class GetUsersQuery extends BaseData
     ) {}
 
     /**
-     * Get the validation rules for the query.
-     *
      * @return array<string, array<int, mixed>>
      */
     public static function rules(): array

@@ -11,9 +11,6 @@ use Spatie\LaravelData\Support\Transformation\TransformationContext;
 
 class PasswordTransformer implements Transformer
 {
-    /**
-     * Transform the password to a hash.
-     */
     public function transform(DataProperty $property, mixed $value, TransformationContext $context): ?string
     {
         return filled($value) && is_string($value) ? Hash::make($value) : null;

@@ -16,9 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 final readonly class UserController
 {
-    /**
-     * Display a listing of the users.
-     */
     public function index(GetUsersQuery $query): JsonResponse
     {
         Gate::authorize('viewAny', User::class);
@@ -35,9 +32,6 @@ final readonly class UserController
         ]);
     }
 
-    /**
-     * Store a newly created user in storage.
-     */
     public function store(CreateUserCommand $command): JsonResponse
     {
         Gate::authorize('create', User::class);
@@ -49,9 +43,6 @@ final readonly class UserController
         ], 201);
     }
 
-    /**
-     * Display the specified user.
-     */
     public function show(int $id): JsonResponse
     {
         $user = User::findOrFail($id);
@@ -63,9 +54,6 @@ final readonly class UserController
         ]);
     }
 
-    /**
-     * Update the specified user in storage.
-     */
     public function update(UpdateUserCommand $command, int $id): JsonResponse
     {
         $user = User::findOrFail($id);
@@ -83,9 +71,6 @@ final readonly class UserController
         ]);
     }
 
-    /**
-     * Remove the specified user from storage.
-     */
     public function destroy(int $id): JsonResponse
     {
         $user = User::findOrFail($id);

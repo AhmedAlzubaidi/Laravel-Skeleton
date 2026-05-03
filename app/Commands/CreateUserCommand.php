@@ -13,9 +13,6 @@ use Spatie\LaravelData\Attributes\WithTransformer;
 
 class CreateUserCommand extends BaseData
 {
-    /**
-     * Create a new CreateUserCommand instance.
-     */
     public function __construct(
         public string $username,
         public string $email,
@@ -25,8 +22,6 @@ class CreateUserCommand extends BaseData
     ) {}
 
     /**
-     * Get the validation rules for the command.
-     *
      * @return array<string, array<int, mixed>>
      */
     public static function rules(): array

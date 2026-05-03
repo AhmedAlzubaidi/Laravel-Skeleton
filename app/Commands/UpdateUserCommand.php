@@ -15,9 +15,6 @@ use Spatie\LaravelData\Attributes\WithTransformer;
 
 class UpdateUserCommand extends BaseData
 {
-    /**
-     * Create a new UpdateUserCommand instance.
-     */
     public function __construct(
         public string $username,
         public string $email,
@@ -27,10 +24,6 @@ class UpdateUserCommand extends BaseData
     ) {}
 
     /**
-     * Get the validation rules for the command.
-     *
-     * Resolved from the {user} route parameter bound by Route::apiResource('users', ...).
-     *
      * @return array<string, array<int, mixed>>
      */
     public static function rules(): array

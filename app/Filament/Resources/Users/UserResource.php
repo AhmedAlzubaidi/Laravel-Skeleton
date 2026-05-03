@@ -31,14 +31,8 @@ class UserResource extends Resource
      */
     protected static ?string $model = User::class;
 
-    /**
-     * The navigation icon for the resource.
-     */
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    /**
-     * Builds the form for the resource.
-     */
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -68,9 +62,6 @@ class UserResource extends Resource
             ]);
     }
 
-    /**
-     * Builds the table for the resource.
-     */
     public static function table(Table $table): Table
     {
         return $table
@@ -108,9 +99,7 @@ class UserResource extends Resource
      */
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     /**

@@ -23,9 +23,6 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 
 final class AdminPanelProvider extends PanelProvider
 {
-    /**
-     * Configure the panel.
-     */
     public function panel(Panel $panel): Panel
     {
         return $panel

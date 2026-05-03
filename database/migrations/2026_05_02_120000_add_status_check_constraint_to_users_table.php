@@ -9,15 +9,8 @@ use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
-    /**
-     * Add a database-level constraint guaranteeing users.status only ever
-     * holds a value from the UserStatus enum, even if a row is inserted
-     * outside Eloquent (raw SQL, console, another service).
-     *
-     * No-op on SQLite (in-memory test DB) since adding constraints to an
-     * existing SQLite table requires a full rebuild and the runtime cast
-     * already protects application code paths.
-     */
+    // No-op on SQLite: adding a CHECK to an existing table requires a rebuild,
+    // and the Eloquent cast already guards application writes there.
     public function up(): void
     {
         $driver = Schema::getConnection()->getDriverName();

@@ -14,9 +14,6 @@ use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         $this->configureCommands();
@@ -25,9 +22,6 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureGates();
     }
 
-    /**
-     * Configure the application's commands.
-     */
     private function configureCommands(): void
     {
         DB::prohibitDestructiveCommands(
@@ -35,26 +29,17 @@ final class AppServiceProvider extends ServiceProvider
         );
     }
 
-    /**
-     * Configure the dates.
-     */
     private function configureDates(): void
     {
         Date::use(CarbonImmutable::class);
     }
 
-    /**
-     * Configure the models.
-     */
     private function configureModels(): void
     {
         Model::unguard();
         Model::shouldBeStrict(! app()->isProduction());
     }
 
-    /**
-     * Configure the gates.
-     */
     private function configureGates(): void
     {
         Gate::before(function (User $user, string $ability): ?bool {
