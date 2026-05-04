@@ -19,9 +19,8 @@ return new class extends Migration
             ->implode(', ');
 
         match ($driver) {
-            'pgsql'            => DB::statement("ALTER TABLE users ADD CONSTRAINT users_status_check CHECK (status IN ({$values}))"),
-            'mysql', 'mariadb' => DB::statement("ALTER TABLE users ADD CONSTRAINT users_status_check CHECK (status IN ({$values}))"),
-            default            => null,
+            'pgsql', 'mysql', 'mariadb' => DB::statement("ALTER TABLE users ADD CONSTRAINT users_status_check CHECK (status IN ({$values}))"),
+            default                     => null,
         };
     }
 
