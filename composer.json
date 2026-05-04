@@ -47,10 +47,10 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
-            "@php artisan filament:upgrade",
-            "@php artisan boost:update --silent || true"
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
+            "@php artisan boost:update --silent || true",
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
