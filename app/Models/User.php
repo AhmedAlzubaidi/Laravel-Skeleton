@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Filament\Panel;
-use App\Enums\UserStatus;
+use App\Casts\UserStatusCast;
 use Laravel\Passport\HasApiTokens;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\HasName;
@@ -62,7 +62,7 @@ final class User extends Authenticatable implements FilamentUser, HasName, OAuth
         return [
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
-            'status'            => UserStatus::class,
+            'status'            => UserStatusCast::class,
         ];
     }
 }
