@@ -52,7 +52,6 @@ arch('models')
         'App\Models',
         'App\Jobs',
         'App\Http',
-        'App\Console',
     ]);
 
 // enable this when the project has a Traits folder
