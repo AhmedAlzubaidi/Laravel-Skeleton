@@ -81,7 +81,6 @@ php artisan serve
 - **UserPolicy**: Enforces access control based on user roles
 - **Spatie Permission**: Role-based access control
 - **Admin Bypass**: Admins bypass all authorization checks via `Gate::before` callback
-- **Status Update Restriction**: Only admins can update user status
 
 ### **Routes**
 - API routes are defined in `routes/api.php` with v1 versioning
@@ -111,7 +110,6 @@ final readonly class UserController
         $users = User::query()
             ->when($query->username, fn($q, $username) => $q->where('username', 'like', "%{$username}%"))
             ->when($query->email, fn($q, $email) => $q->where('email', 'like', "%{$email}%"))
-            ->when($query->status, fn($q, $status) => $q->where('status', $status))
             ->paginate($query->perPage, ['*'], 'page', $query->page);
 
         return response()->json([
@@ -184,7 +182,6 @@ final class CreateUserCommand extends BaseData
         public string $username,
         public string $email,
         public string $password,
-        public UserStatus $status = UserStatus::ACTIVE,
     ) {}
 
     public static function rules(): array
@@ -201,7 +198,6 @@ final class CreateUserCommand extends BaseData
                     ->symbols()
                     ->uncompromised(), // Checks against data leaks via HaveIBeenPwned
             ],
-            'status'   => ['sometimes', 'required', new Enum(UserStatus::class)],
         ];
     }
 }
@@ -212,7 +208,6 @@ final class GetUsersQuery extends BaseData
     public function __construct(
         public ?string $username,
         public ?string $email,
-        public ?UserStatus $status,
         #[MapInputName('per_page')] // Maps 'per_page' input to 'perPage' property
         public int $perPage = 10,
         public int $page = 1,
@@ -223,7 +218,6 @@ final class GetUsersQuery extends BaseData
         return [
             'username' => ['sometimes', 'required', 'string', 'max:40'],
             'email'    => ['sometimes', 'required', 'email', 'exists:users,email'],
-            'status'   => ['sometimes', 'required', new Enum(UserStatus::class)],
             'per_page' => ['sometimes', 'required', 'integer', 'min:1', 'max:100'],
             'page'     => ['sometimes', 'required', 'integer', 'min:1'],
         ];
@@ -238,7 +232,6 @@ final class UserDto extends BaseData
         public string $username,
         public string $email,
         public ?string $password,
-        public UserStatus $status,
     ) {}
 }
 ```
@@ -325,14 +318,14 @@ describe('User Controller - Normal Users', function () {
 ```
 
 ### **Test Coverage**
-- **149 tests** covering all CRUD operations and architecture principles
-- **498 assertions** ensuring comprehensive coverage
+- **129 tests** covering all CRUD operations and architecture principles
+- **386 assertions** ensuring comprehensive coverage
 - **100% type coverage** across all classes
 - **Authorization testing** for both admin and normal users
 - **Validation testing** for all input fields including password strength and HaveIBeenPwned data leak checks
 - **Error handling** (404, 403, 422 status codes)
 - **Architecture compliance** testing
-- **Unit tests** for UserStatus enum and UserPolicy
+- **Unit tests** for UserPolicy and the BaseData foundation
 - **Coverage reports** available via `composer test:coverage` command
 
 </details>
@@ -351,9 +344,6 @@ app/
 │
 ├── DTOs/.......................... # Response DTOs
 │   └── UserDto.php
-│
-├── Enums/......................... # Enum classes
-│   └── UserStatus.php
 │
 ├── Foundation/.................... # Base classes and common functionality
 │   └── BaseData.php
@@ -402,8 +392,8 @@ tests/
 │   └── UserTest.php
 └── Unit/.......................... # Unit tests
     ├── ArchitectureTest.php
-    ├── UserPolicyTest.php
-    └── UserStatusTest.php
+    ├── BaseDataTest.php
+    └── UserPolicyTest.php
 ```
 
 </details>
@@ -429,7 +419,6 @@ class UserPolicy
     public function view(User $user, User $model): bool { return $user->id === $model->id; }
     public function create(): bool { return false; }
     public function update(User $user, User $model): bool { return $user->id === $model->id; }
-    public function updateStatus(): bool { return false; }
     public function delete(): bool { return false; }
 }
 ```
@@ -442,11 +431,9 @@ class UserPolicy
 ### **User Management**
 - ✅ Complete CRUD operations for users
 - ✅ Role-based access control
-- ✅ User status management (Active, Inactive, Suspended, Pending)
 - ✅ Email and password validation
-- ✅ Filtering by username, email, and status
+- ✅ Filtering by username and email
 - ✅ Pagination support (configurable per_page and page parameters)
-- ✅ Status update restriction (admin-only)
 
 ### **Admin Panel (Filament)**
 - ✅ Beautiful admin interface for user management
@@ -459,26 +446,25 @@ class UserPolicy
 - `GET /api/v1/users` - List users with filtering and pagination (admin only)
 - `GET /api/v1/users/{id}` - Show user (own profile or admin)
 - `POST /api/v1/users` - Create user (admin only)
-- `PUT /api/v1/users/{id}` - Update user (own profile or admin, status admin-only)
+- `PUT /api/v1/users/{id}` - Update user (own profile or admin)
 - `DELETE /api/v1/users/{id}` - Delete user (admin only)
 - `GET /api/v1/user` - Get current authenticated user
 
 ### **Query Parameters**
 - `username` - Filter users by username (partial match)
 - `email` - Filter users by email (exact match)
-- `status` - Filter users by status (Active, Inactive, Suspended, Pending)
 - `per_page` - Number of items per page (1-100, default: 10)
 - `page` - Page number (default: 1)
 
 ### **Testing**
-- ✅ Comprehensive test coverage (149 tests, 498 assertions)
+- ✅ Comprehensive test coverage (129 tests, 386 assertions)
 - ✅ 100% type coverage across all classes
 - ✅ Admin and normal user scenarios
 - ✅ Authorization testing
 - ✅ Validation testing
 - ✅ Error handling testing
 - ✅ Architecture compliance testing
-- ✅ Unit tests for UserStatus enum and UserPolicy
+- ✅ Unit tests for UserPolicy and the BaseData foundation
 
 ### **Code Quality**
 - ✅ Strict typing throughout the application
