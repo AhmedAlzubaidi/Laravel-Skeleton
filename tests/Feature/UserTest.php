@@ -282,12 +282,6 @@ describe('User Model', function () {
             ]);
         });
 
-        it('casts status to UserStatus enum', function () {
-            $user = User::factory()->create(['status' => 'active']);
-
-            expect($user->status)->toBeInstanceOf(App\Enums\UserStatus::class);
-        });
-
         it('casts email_verified_at to datetime', function () {
             $user = User::factory()->create(['email_verified_at' => '2023-01-01 12:00:00']);
 

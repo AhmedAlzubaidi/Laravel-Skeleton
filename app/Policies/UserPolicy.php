@@ -28,11 +28,6 @@ final readonly class UserPolicy
         return $user->id === $model->id;
     }
 
-    public function updateStatus(): bool
-    {
-        return false;
-    }
-
     public function delete(): bool
     {
         return false;

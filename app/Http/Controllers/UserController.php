@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\DTOs\UserDto;
-use App\Enums\UserStatus;
 use App\Queries\GetUsersQuery;
 use Illuminate\Http\JsonResponse;
 use App\Commands\CreateUserCommand;
@@ -23,7 +22,6 @@ final readonly class UserController
         $users = User::query()
             ->when($query->username, fn (Builder $q, string $username): Builder => $q->where('username', 'like', "%{$username}%"))
             ->when($query->email, fn (Builder $q, string $email): Builder => $q->where('email', 'like', "%{$email}%"))
-            ->when($query->status, fn (Builder $q, UserStatus $status): Builder => $q->where('status', $status))
             ->paginate($query->perPage, ['*'], 'page', $query->page);
 
         return response()->json([
@@ -58,10 +56,6 @@ final readonly class UserController
     {
         $user = User::findOrFail($id);
         Gate::authorize('update', $user);
-
-        if ($command->status instanceof UserStatus && $command->status !== $user->status) {
-            Gate::authorize('updateStatus', $user);
-        }
 
         $user->update($command->validated());
 
