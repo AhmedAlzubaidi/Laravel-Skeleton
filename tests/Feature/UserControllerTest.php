@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use App\Enums\UserStatus;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,7 +36,6 @@ describe('User Controller - Admin Users', function () {
                         '*' => [
                             'username',
                             'email',
-                            'status',
                         ],
                     ],
                     'current_page',
@@ -74,24 +72,6 @@ describe('User Controller - Admin Users', function () {
             $response->assertStatus(200)
                 ->assertJsonCount(1, 'data')
                 ->assertJsonPath('data.0.email', 'john@example.com')
-                ->assertJsonStructure([
-                    'data',
-                    'current_page',
-                    'per_page',
-                    'total',
-                    'message',
-                ]);
-        });
-
-        it('allows admin to filter users by status', function () {
-            User::factory()->create(['status' => UserStatus::ACTIVE]);
-            User::factory()->create(['status' => UserStatus::INACTIVE]);
-
-            $response = $this->getJson('/api/v1/users?status='.UserStatus::ACTIVE->value);
-
-            $response->assertStatus(200)
-                ->assertJsonPath('total', 12) // 10 from UserSeeder + 1 admin + 1 from test
-                ->assertJsonPath('data.0.status', UserStatus::ACTIVE->value)
                 ->assertJsonStructure([
                     'data',
                     'current_page',
@@ -143,7 +123,6 @@ describe('User Controller - Admin Users', function () {
                         'id',
                         'username',
                         'email',
-                        'status',
                     ],
                     'message',
                 ])
@@ -181,38 +160,15 @@ describe('User Controller - Admin Users', function () {
                         'id',
                         'username',
                         'email',
-                        'status',
                     ],
                     'message',
                 ])
                 ->assertJsonPath('data.username', 'New User')
-                ->assertJsonPath('data.email', 'newuser@example.com')
-                ->assertJsonPath('data.status', UserStatus::ACTIVE->value);
+                ->assertJsonPath('data.email', 'newuser@example.com');
 
             $this->assertDatabaseHas('users', [
                 'username' => 'New User',
                 'email'    => 'newuser@example.com',
-                'status'   => UserStatus::ACTIVE->value,
-            ]);
-        });
-
-        it('allows admin to create user with custom status', function () {
-            $userData = [
-                'username'              => 'New User',
-                'email'                 => 'newuser@example.com',
-                'password'              => 'MySecurePass123!@#',
-                'password_confirmation' => 'MySecurePass123!@#',
-                'status'                => UserStatus::PENDING->value,
-            ];
-
-            $response = $this->postJson('/api/v1/users', $userData);
-
-            $response->assertStatus(201)
-                ->assertJsonPath('data.status', UserStatus::PENDING->value);
-
-            $this->assertDatabaseHas('users', [
-                'email'  => 'newuser@example.com',
-                'status' => UserStatus::PENDING->value,
             ]);
         });
 
@@ -291,7 +247,6 @@ describe('User Controller - Admin Users', function () {
             $updateData = [
                 'username' => 'Updated User',
                 'email'    => 'updated@example.com',
-                'status'   => UserStatus::INACTIVE->value,
             ];
 
             $response   = $this->putJson("/api/v1/users/{$this->user->id}", $updateData);
@@ -302,19 +257,16 @@ describe('User Controller - Admin Users', function () {
                         'id',
                         'username',
                         'email',
-                        'status',
                     ],
                     'message',
                 ])
                 ->assertJsonPath('data.username', 'Updated User')
-                ->assertJsonPath('data.email', 'updated@example.com')
-                ->assertJsonPath('data.status', UserStatus::INACTIVE->value);
+                ->assertJsonPath('data.email', 'updated@example.com');
 
             $this->assertDatabaseHas('users', [
                 'id'       => $this->user->id,
                 'username' => 'Updated User',
                 'email'    => 'updated@example.com',
-                'status'   => UserStatus::INACTIVE->value,
             ]);
         });
 
@@ -443,7 +395,6 @@ describe('User Controller - Normal Users', function () {
                         'id',
                         'username',
                         'email',
-                        'status',
                     ],
                     'message',
                 ])
@@ -498,23 +449,10 @@ describe('User Controller - Normal Users', function () {
             ]);
         });
 
-        it('denies normal users from updating their own status', function () {
-            $updateData = [
-                'username' => $this->user->username,
-                'email'    => $this->user->email,
-                'status'   => UserStatus::INACTIVE->value,
-            ];
-
-            $response   = $this->putJson("/api/v1/users/{$this->user->id}", $updateData);
-
-            $response->assertStatus(403);
-        });
-
         it('denies normal users from updating other users profiles', function () {
             $updateData = [
                 'username' => 'Updated Admin',
                 'email'    => 'admin@example.com',
-                'status'   => UserStatus::INACTIVE->value,
             ];
 
             $response   = $this->putJson("/api/v1/users/{$this->admin->id}", $updateData);

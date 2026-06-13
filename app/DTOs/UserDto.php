@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\DTOs;
 
-use App\Enums\UserStatus;
 use App\Foundation\BaseData;
 use Spatie\LaravelData\Attributes\Hidden;
 
@@ -16,6 +15,5 @@ class UserDto extends BaseData
         public string $email,
         #[Hidden]
         public ?string $password,
-        public UserStatus $status,
     ) {}
 }

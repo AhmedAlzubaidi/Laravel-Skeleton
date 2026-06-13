@@ -7,7 +7,6 @@ namespace App\Filament\Resources\Users;
 use BackedEnum;
 use App\Models\User;
 use Filament\Pages\Page;
-use App\Enums\UserStatus;
 use Filament\Tables\Table;
 use App\Validation\Password;
 use Filament\Schemas\Schema;
@@ -18,7 +17,6 @@ use Filament\Forms\Components\Select;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Resources\Pages\PageRegistration;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
@@ -51,10 +49,6 @@ class UserResource extends Resource
                 TextInput::make('password_confirmation')
                     ->password()
                     ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser)),
-                Select::make('status')
-                    ->options(UserStatus::class)
-                    ->default(UserStatus::ACTIVE)
-                    ->required(),
                 Select::make('roles')
                     ->label('Role')
                     ->relationship('roles', 'name')
@@ -68,10 +62,6 @@ class UserResource extends Resource
             ->columns([
                 TextColumn::make('username'),
                 TextColumn::make('email'),
-                TextColumn::make('status')
-                    ->badge()
-                    ->formatStateUsing(fn (UserStatus $state): string => $state->label())
-                    ->color(fn (UserStatus $state): string => $state->color()),
                 TextColumn::make('roles.name')
                     ->label('Role')
                     ->default('No Role'),
@@ -79,10 +69,6 @@ class UserResource extends Resource
                     ->dateTime(),
                 TextColumn::make('updated_at')
                     ->dateTime(),
-            ])
-            ->filters([
-                SelectFilter::make('status')
-                    ->options(UserStatus::class),
             ])
             ->recordActions([
                 EditAction::make(),

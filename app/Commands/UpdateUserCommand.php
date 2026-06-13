@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use App\Enums\UserStatus;
 use App\Foundation\BaseData;
 use App\Validation\Password;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\Rules\Enum;
 use App\Transformers\PasswordTransformer;
 use Spatie\LaravelData\Attributes\WithTransformer;
 
@@ -20,7 +18,6 @@ class UpdateUserCommand extends BaseData
         public string $email,
         #[WithTransformer(PasswordTransformer::class)]
         public ?string $password = null,
-        public ?UserStatus $status = null,
     ) {}
 
     /**
@@ -34,7 +31,6 @@ class UpdateUserCommand extends BaseData
             'username' => ['required', 'string', 'max:40', Rule::unique('users', 'username')->ignore($userId)],
             'email'    => ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
             'password' => ['sometimes', 'required', 'confirmed', Password::strong()],
-            'status'   => ['sometimes', 'required', new Enum(UserStatus::class)],
         ];
     }
 }
