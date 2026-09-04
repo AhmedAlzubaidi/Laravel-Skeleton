@@ -9,7 +9,7 @@ While originally built for personal use, this project is **open source and commu
 ## 🚀 Quick Start
 
 ### Prerequisites
-- PHP 8.4+
+- PHP 8.5+
 - Composer
 
 ### Testing Requirements
