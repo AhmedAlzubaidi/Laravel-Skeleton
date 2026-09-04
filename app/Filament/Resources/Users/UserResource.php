@@ -48,12 +48,15 @@ class UserResource extends Resource
                 TextInput::make('password')
                     ->password()
                     ->rules(['confirmed', Password::strong()])
+                    ->dehydrated(fn (?string $state): bool => filled($state))
                     ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser)),
                 TextInput::make('password_confirmation')
                     ->password()
+                    ->dehydrated(false)
                     ->required(fn (Page $livewire): bool => ($livewire instanceof CreateUser)),
                 Select::make('roles')
-                    ->label('Role')
+                    ->label('Roles')
+                    ->multiple()
                     ->relationship('roles', 'name')
                     ->required(),
             ]);
