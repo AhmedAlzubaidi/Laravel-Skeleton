@@ -475,3 +475,263 @@ class UserPolicy
 - ✅ BaseData foundation for consistent DTO behavior
 
 </details>
+
+<details>
+<summary><strong>🧹 Removing Filament (API-only setup)</strong></summary>
+
+### 1. Remove the packages
+
+```bash
+composer remove filament/filament filament/upgrade
+```
+
+### 2. Delete the panel
+
+```bash
+rm -rf app/Filament app/Providers/Filament
+```
+
+Then drop the provider from `bootstrap/providers.php`:
+
+```diff
+ return [
+     App\Providers\AppServiceProvider::class,
+-    App\Providers\Filament\AdminPanelProvider::class,
+ ];
+```
+
+### 3. Decouple the `User` model
+
+This is the step that actually matters — `app/Models/User.php` implements two Filament contracts,
+so the model fatals if you skip it. Remove the `Filament\Panel`,
+`Filament\Models\Contracts\FilamentUser` and `Filament\Models\Contracts\HasName` imports, then:
+
+```diff
+-final class User extends Authenticatable implements FilamentUser, HasName, OAuthenticatable
++final class User extends Authenticatable implements OAuthenticatable
+```
+
+Delete both Filament methods:
+
+```diff
+-    public function getFilamentName(): string
+-    {
+-        return "{$this->username}";
+-    }
+-
+-    public function canAccessPanel(Panel $panel): bool
+-    {
+-        return $this->isAdmin();
+-    }
+```
+
+> **Keep `isAdmin()`.** It is not Filament-specific — `app/Providers/AppServiceProvider.php:46`
+> uses it for the admin authorization gate, and `app/Policies/UserPolicy.php` depends on that gate.
+
+### 4. Clean up the tooling config
+
+`composer.json` — drop the upgrade hook and the two Filament lint passes:
+
+```diff
+ "post-autoload-dump": [
+     "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+-    "@php artisan package:discover --ansi",
+-    "@php artisan filament:upgrade"
++    "@php artisan package:discover --ansi"
+ ],
+```
+
+```diff
+ "lint": [
+     "pint",
+     "pint config --config config/pint.json",
+-    "pint app/Filament --config app/Filament/pint.json",
+     "npm run lint"
+ ],
+```
+
+Apply the same one-line deletion to the `test:lint` script.
+
+`pint.json` — remove `"app/Filament"` from `notPath`.
+
+`phpunit.xml` — the `<source>` block no longer needs its exclude:
+
+```diff
+-        <exclude>
+-            <directory>app/Filament</directory>
+-        </exclude>
+```
+
+### 5. Update the tests
+
+`tests/Unit/ArchitectureTest.php` — the Laravel preset no longer needs a carve-out, and `App\Filament`
+is no longer a valid model consumer:
+
+```diff
+-arch()->preset()->laravel()->ignoring([
+-    'App\Providers\Filament\AdminPanelProvider',
+-]);
++arch()->preset()->laravel();
+```
+
+```diff
+     ->toOnlyBeUsedIn([
+         'Database\Factories',
+         'Database\Seeders',
+         'App\Providers',
+-        'App\Filament',
+         'App\Services',
+```
+
+`tests/Feature/UserTest.php` — drop the import:
+
+```diff
+-use Filament\Panel;
+ use App\Models\User;
+ use Database\Seeders\DatabaseSeeder;
+ use Illuminate\Foundation\Testing\RefreshDatabase;
+```
+
+Delete the `canAccessPanel` block in full — all six tests exercise a method that no longer exists:
+
+```diff
+-    describe('canAccessPanel', function () {
+-        it('allows admin users to access panel', function () { /* ... */ });
+-        it('denies normal users from accessing panel', function () { /* ... */ });
+-        it('denies users without roles from accessing panel', function () { /* ... */ });
+-        it('works with different panel names', function () { /* ... */ });
+-        it('works with multiple panels', function () { /* ... */ });
+-        it('consistently denies access for non-admin users across panels', function () { /* ... */ });
+-    });
+```
+
+Delete the `getFilamentName` block in full, for the same reason:
+
+```diff
+-    describe('getFilamentName', function () {
+-        it('returns username as filament name', function () { /* ... */ });
+-        it('returns username with numbers', function () { /* ... */ });
+-        it('returns username with mixed case', function () { /* ... */ });
+-        it('returns admin username correctly', function () { /* ... */ });
+-    });
+```
+
+In `Traits and Interfaces`, remove the two Filament contract assertions — keep the `OAuthenticatable`
+one and every trait test:
+
+```diff
+     describe('Traits and Interfaces', function () {
+-        it('implements FilamentUser interface', function () {
+-            $user = new User();
+-
+-            expect($user)->toBeInstanceOf(Filament\Models\Contracts\FilamentUser::class);
+-        });
+-
+-        it('implements HasName interface', function () {
+-            $user = new User();
+-
+-            expect($user)->toBeInstanceOf(Filament\Models\Contracts\HasName::class);
+-        });
+-
+         it('implements OAuthenticatable interface', function () {
+```
+
+In `Integration`, drop the standalone panel test:
+
+```diff
+-        it('admin user can access panel', function () {
+-            $admin     = (new User())->findForPassport('admin');
+-            $panel     = new Panel('admin');
+-
+-            $canAccess = $admin->canAccessPanel($panel);
+-
+-            expect($canAccess)->toBeTrue();
+-        });
+```
+
+Then trim the Filament assertions out of `complete user workflow`, keeping the `findForPassport`
+and `isAdmin` coverage intact:
+
+```diff
+             // Test isAdmin
+             expect($user->isAdmin())->toBeFalse();
+
+-            // Test canAccessPanel
+-            $panel            = new Panel('admin');
+-            expect($user->canAccessPanel($panel))->toBeFalse();
+-
+-            // Test getFilamentName
+-            expect($user->getFilamentName())->toBe('testuser');
+-
+             // Promote to admin
+             $user->assignRole('admin');
+
+             // Test isAdmin after promotion
+             expect($user->isAdmin())->toBeTrue();
+-
+-            // Test canAccessPanel after promotion
+-            expect($user->canAccessPanel($panel))->toBeTrue();
+         });
+```
+
+And out of `admin user has all required capabilities`:
+
+```diff
+             // Test all admin capabilities
+             expect($admin->isAdmin())->toBeTrue();
+-            expect($admin->canAccessPanel(new Panel('admin')))->toBeTrue();
+-            expect($admin->canAccessPanel(new Panel('dashboard')))->toBeTrue();
+-            expect($admin->getFilamentName())->toBe('admin');
+```
+
+Finally, `Edge Cases and Error Handling` — its `handles very long usernames` test asserts the
+boundary *through* `getFilamentName()`. The case is worth keeping, so re-point it at the attribute
+rather than deleting it:
+
+```diff
+         it('handles very long usernames', function () {
+             $longUsername = str_repeat('a', 40);
+-            $user         = User::factory()->create(['username' => $longUsername]);
+-
+-            $filamentName = $user->getFilamentName();
+-
+-            expect($filamentName)->toBe($longUsername);
++            $user         = User::factory()->create(['username' => $longUsername]);
++
++            expect($user->refresh()->username)->toBe($longUsername);
+         });
+```
+
+The block's other test (`handles email with unicode characters`) touches `findForPassport` only and
+needs no change. The `findForPassport`, `isAdmin` and `Model Attributes and Casting` blocks stay as
+they are, and `tests/Unit/UsernameTest.php` is Filament-independent — leave it alone.
+
+### 6. Drop the published assets
+
+They're build output, tracked only because Filament publishes into `public/`:
+
+```bash
+git rm -r --cached public/js/filament public/css/filament
+rm -rf public/js/filament public/css/filament
+```
+
+### 7. Regenerate the generated files
+
+`_ide_helper.php` and the AI guideline files (`CLAUDE.md`, `AGENTS.md`, `.cursor/`, `.junie/`,
+`.github/copilot-instructions.md`) are generated and still reference Filament:
+
+```bash
+php artisan ide-helper:generate
+php artisan boost:install
+```
+
+### 8. Verify
+
+```bash
+composer test
+```
+
+Also delete the "To Access Filament admin panel" note from the Development Commands block above,
+and the **Admin Panel** entries in the Core Packages and Current Features sections.
+
+</details>
