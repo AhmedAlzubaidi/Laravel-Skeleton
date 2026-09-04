@@ -1,4 +1,12 @@
 {
+    "agents": [
+        "claude_code",
+        "codex",
+        "copilot",
+        "cursor",
+        "junie"
+    ],
     "cloud": false,
-    "guidelines": true
+    "guidelines": true,
+    "mcp": true
 }
