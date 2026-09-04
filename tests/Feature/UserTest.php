@@ -103,15 +103,6 @@ describe('User Model', function () {
             expect($foundUser)->toBeNull();
         });
 
-        it('handles special characters in username', function () {
-            $user      = User::factory()->create(['username' => 'test_user-123']);
-
-            $foundUser = (new User())->findForPassport('test_user-123');
-
-            expect($foundUser)->toBeInstanceOf(User::class)
-                ->and($foundUser->id)->toBe($user->id);
-        });
-
         it('handles special characters in email', function () {
             $user      = User::factory()->create(['email' => 'test+tag@example.com']);
 
@@ -237,14 +228,6 @@ describe('User Model', function () {
             $filamentName = $user->getFilamentName();
 
             expect($filamentName)->toBe('testuser');
-        });
-
-        it('returns username with special characters', function () {
-            $user         = User::factory()->create(['username' => 'test_user-123']);
-
-            $filamentName = $user->getFilamentName();
-
-            expect($filamentName)->toBe('test_user-123');
         });
 
         it('returns username with numbers', function () {
@@ -425,14 +408,6 @@ describe('User Model', function () {
     });
 
     describe('Edge Cases and Error Handling', function () {
-        it('handles empty username gracefully', function () {
-            $user         = User::factory()->create(['username' => '']);
-
-            $filamentName = $user->getFilamentName();
-
-            expect($filamentName)->toBe('');
-        });
-
         it('handles very long usernames', function () {
             $longUsername = str_repeat('a', 40);
             $user         = User::factory()->create(['username' => $longUsername]);
@@ -440,14 +415,6 @@ describe('User Model', function () {
             $filamentName = $user->getFilamentName();
 
             expect($filamentName)->toBe($longUsername);
-        });
-
-        it('handles usernames with unicode characters', function () {
-            $user         = User::factory()->create(['username' => 'tëstüser']);
-
-            $filamentName = $user->getFilamentName();
-
-            expect($filamentName)->toBe('tëstüser');
         });
 
         it('handles email with unicode characters', function () {

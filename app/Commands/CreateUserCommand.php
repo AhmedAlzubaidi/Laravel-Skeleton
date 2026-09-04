@@ -6,6 +6,7 @@ namespace App\Commands;
 
 use App\Foundation\BaseData;
 use App\Validation\Password;
+use App\Validation\Username;
 use App\Transformers\PasswordTransformer;
 use Spatie\LaravelData\Attributes\WithTransformer;
 
@@ -24,9 +25,19 @@ class CreateUserCommand extends BaseData
     public static function rules(): array
     {
         return [
-            'username' => ['required', 'string', 'max:40', 'unique:users,username'],
+            'username' => ['required', ...Username::strict(), 'unique:users,username'],
             'email'    => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::strong()],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function messages(): array
+    {
+        return [
+            'username.regex' => Username::message(),
         ];
     }
 }

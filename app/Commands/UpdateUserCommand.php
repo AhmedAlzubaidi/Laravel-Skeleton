@@ -6,6 +6,7 @@ namespace App\Commands;
 
 use App\Foundation\BaseData;
 use App\Validation\Password;
+use App\Validation\Username;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
 use App\Transformers\PasswordTransformer;
@@ -28,9 +29,19 @@ class UpdateUserCommand extends BaseData
         $userId = Route::current()?->parameter('user');
 
         return [
-            'username' => ['required', 'string', 'max:40', Rule::unique('users', 'username')->ignore($userId)],
+            'username' => ['required', ...Username::strict(), Rule::unique('users', 'username')->ignore($userId)],
             'email'    => ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
             'password' => ['sometimes', 'required', 'confirmed', Password::strong()],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function messages(): array
+    {
+        return [
+            'username.regex' => Username::message(),
         ];
     }
 }

@@ -9,6 +9,7 @@ use App\Models\User;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
 use App\Validation\Password;
+use App\Validation\Username;
 use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
@@ -37,7 +38,9 @@ class UserResource extends Resource
             ->components([
                 TextInput::make('username')
                     ->required()
-                    ->maxLength(255),
+                    ->rules(Username::strict())
+                    ->validationMessages(['regex' => Username::message()])
+                    ->maxLength(Username::MAX_LENGTH),
                 TextInput::make('email')
                     ->email()
                     ->required()

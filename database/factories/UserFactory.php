@@ -26,7 +26,9 @@ final class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'username'          => fake()->unique()->userName(),
+            'username'          => Str::of(fake()->unique()->userName())
+                ->replaceMatches('/[^a-zA-Z0-9_]/', '_')
+                ->toString(),
             'email'             => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password'          => self::$password ??= Hash::make('password'),

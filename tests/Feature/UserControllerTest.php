@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -46,14 +47,14 @@ describe('User Controller - Admin Users', function () {
         });
 
         it('allows admin to filter users by username', function () {
-            User::factory()->create(['username' => 'Unique John Doe']);
-            User::factory()->create(['username' => 'Jane Smith']);
+            User::factory()->create(['username' => 'unique_john_doe']);
+            User::factory()->create(['username' => 'jane_smith']);
 
-            $response = $this->getJson('/api/v1/users?username=Unique John');
+            $response = $this->getJson('/api/v1/users?username=unique_john');
 
             $response->assertStatus(200)
                 ->assertJsonCount(1, 'data')
-                ->assertJsonPath('data.0.username', 'Unique John Doe')
+                ->assertJsonPath('data.0.username', 'unique_john_doe')
                 ->assertJsonStructure([
                     'data',
                     'current_page',
@@ -146,7 +147,7 @@ describe('User Controller - Admin Users', function () {
     describe('POST /api/v1/users', function () {
         it('allows admin to create new users', function () {
             $userData = [
-                'username'              => 'New User',
+                'username'              => 'new_user',
                 'email'                 => 'newuser@example.com',
                 'password'              => 'MySecurePass123!@#',
                 'password_confirmation' => 'MySecurePass123!@#',
@@ -163,11 +164,11 @@ describe('User Controller - Admin Users', function () {
                     ],
                     'message',
                 ])
-                ->assertJsonPath('data.username', 'New User')
+                ->assertJsonPath('data.username', 'new_user')
                 ->assertJsonPath('data.email', 'newuser@example.com');
 
             $this->assertDatabaseHas('users', [
-                'username' => 'New User',
+                'username' => 'new_user',
                 'email'    => 'newuser@example.com',
             ]);
         });
@@ -181,7 +182,7 @@ describe('User Controller - Admin Users', function () {
 
         it('validates email format', function () {
             $response = $this->postJson('/api/v1/users', [
-                'username' => 'Test User',
+                'username' => 'test_user',
                 'email'    => 'invalid-email',
                 'password' => 'password123',
             ]);
@@ -194,7 +195,7 @@ describe('User Controller - Admin Users', function () {
             User::factory()->create(['email' => 'existing@example.com']);
 
             $response = $this->postJson('/api/v1/users', [
-                'username' => 'Test User',
+                'username' => 'test_user',
                 'email'    => 'existing@example.com',
                 'password' => 'password123',
             ]);
@@ -216,9 +217,56 @@ describe('User Controller - Admin Users', function () {
                 ->assertJsonValidationErrors(['username']);
         });
 
+        it('rejects usernames containing anything but letters, numbers and underscores', function (string $username) {
+            $response = $this->postJson('/api/v1/users', [
+                'username' => $username,
+                'email'    => 'test@example.com',
+            ]);
+
+            $response->assertStatus(422)
+                ->assertJsonValidationErrors(['username'])
+                ->assertJsonPath('errors.username.0', 'The username may only contain letters, numbers and underscores.');
+        })->with([
+            'unicode letters' => ['tëstüser'],
+            'spaces'          => ['test user'],
+            'dots'            => ['test.user'],
+            'dashes'          => ['test-user'],
+            'emoji'           => ['test🔥user'],
+            'at sign'         => ['test@user'],
+            'path traversal'  => ['../../etc/passwd'],
+            'null byte'       => ["test\0user"],
+        ]);
+
+        it('accepts usernames made only of letters, numbers and underscores', function (string $username) {
+            $response = $this->postJson('/api/v1/users', [
+                'username' => $username,
+                'email'    => 'test@example.com',
+            ]);
+
+            $response->assertStatus(422)
+                ->assertJsonMissingValidationErrors(['username']);
+        })->with([
+            'lowercase'   => ['testuser'],
+            'mixed case'  => ['TestUser'],
+            'digits'      => ['user123'],
+            'underscore'  => ['test_user'],
+            'all three'   => ['Test_User_123'],
+            'single char' => ['a'],
+        ]);
+
+        it('rejects usernames longer than the maximum length', function () {
+            $response = $this->postJson('/api/v1/users', [
+                'username' => str_repeat('a', 41),
+                'email'    => 'test@example.com',
+            ]);
+
+            $response->assertStatus(422)
+                ->assertJsonValidationErrors(['username']);
+        });
+
         it('validates password length', function () {
             $response = $this->postJson('/api/v1/users', [
-                'username'              => 'Test User',
+                'username'              => 'test_user',
                 'email'                 => 'test@example.com',
                 'password'              => '123',
                 'password_confirmation' => '123',
@@ -230,7 +278,7 @@ describe('User Controller - Admin Users', function () {
 
         it('validates password against HaveIBeenPwned data leaks', function () {
             $response = $this->postJson('/api/v1/users', [
-                'username'              => 'Test User',
+                'username'              => 'test_user',
                 'email'                 => 'test@example.com',
                 'password'              => 'Password123!',
                 'password_confirmation' => 'Password123!',
@@ -245,7 +293,7 @@ describe('User Controller - Admin Users', function () {
     describe('PUT /api/v1/users/{id}', function () {
         it('allows admin to update any user', function () {
             $updateData = [
-                'username' => 'Updated User',
+                'username' => 'updated_user',
                 'email'    => 'updated@example.com',
             ];
 
@@ -260,12 +308,12 @@ describe('User Controller - Admin Users', function () {
                     ],
                     'message',
                 ])
-                ->assertJsonPath('data.username', 'Updated User')
+                ->assertJsonPath('data.username', 'updated_user')
                 ->assertJsonPath('data.email', 'updated@example.com');
 
             $this->assertDatabaseHas('users', [
                 'id'       => $this->user->id,
-                'username' => 'Updated User',
+                'username' => 'updated_user',
                 'email'    => 'updated@example.com',
             ]);
         });
@@ -309,9 +357,20 @@ describe('User Controller - Admin Users', function () {
                 ->assertJsonValidationErrors(['username', 'email']);
         });
 
+        it('rejects a username with disallowed characters when updating', function () {
+            $response = $this->putJson("/api/v1/users/{$this->user->id}", [
+                'username' => 'updated user',
+                'email'    => $this->user->email,
+            ]);
+
+            $response->assertStatus(422)
+                ->assertJsonValidationErrors(['username'])
+                ->assertJsonPath('errors.username.0', 'The username may only contain letters, numbers and underscores.');
+        });
+
         it('email uniqueness validation excludes current user', function () {
             $response = $this->putJson("/api/v1/users/{$this->user->id}", [
-                'username' => fake()->unique()->userName(),
+                'username' => Str::of(fake()->unique()->userName())->replaceMatches('/[^a-zA-Z0-9_]/', '_')->toString(),
                 'email'    => $this->user->email,
             ]);
 
@@ -417,7 +476,7 @@ describe('User Controller - Normal Users', function () {
     describe('POST /api/v1/users', function () {
         it('denies normal users from creating new users', function () {
             $userData = [
-                'username'              => 'New User',
+                'username'              => 'new_user',
                 'email'                 => 'newuser@example.com',
                 'password'              => 'MySecurePass123!@#',
                 'password_confirmation' => 'MySecurePass123!@#',
@@ -432,26 +491,26 @@ describe('User Controller - Normal Users', function () {
     describe('PUT /api/v1/users/{id}', function () {
         it('allows normal users to update their own profile', function () {
             $updateData = [
-                'username' => 'Updated Normal User',
+                'username' => 'updated_normal_user',
                 'email'    => 'updated@example.com',
             ];
 
             $response   = $this->putJson("/api/v1/users/{$this->user->id}", $updateData);
 
             $response->assertStatus(200)
-                ->assertJsonPath('data.username', 'Updated Normal User')
+                ->assertJsonPath('data.username', 'updated_normal_user')
                 ->assertJsonPath('data.email', 'updated@example.com');
 
             $this->assertDatabaseHas('users', [
                 'id'       => $this->user->id,
-                'username' => 'Updated Normal User',
+                'username' => 'updated_normal_user',
                 'email'    => 'updated@example.com',
             ]);
         });
 
         it('denies normal users from updating other users profiles', function () {
             $updateData = [
-                'username' => 'Updated Admin',
+                'username' => 'updated_admin',
                 'email'    => 'admin@example.com',
             ];
 
