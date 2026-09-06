@@ -1,16 +1,10 @@
-# docker/development/workspace/Dockerfile
-# Use the official PHP CLI image as the base
 FROM php:8.5-cli
 
-# Set environment variables for user and group ID
+# Synced with the host user so bind-mounted files stay writable both ways
 ARG UID=1000
 ARG GID=1000
 ARG NODE_VERSION=22.0.0
 
-# Install system dependencies and build libraries
-# opcache is deliberately absent from the extension list: php:8.5 compiles OPcache
-# statically into the binary, so building it shared produces no module and fails
-# the whole RUN with "cp: cannot stat 'modules/*'".
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     unzip \
@@ -34,7 +28,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Use ARG to define environment variables passed from the Docker build command or Docker Compose.
 ARG XDEBUG_ENABLED
 ARG XDEBUG_MODE
 ARG XDEBUG_HOST
@@ -42,7 +35,6 @@ ARG XDEBUG_IDE_KEY
 ARG XDEBUG_LOG
 ARG XDEBUG_LOG_LEVEL
 
-# Configure Xdebug if enabled
 RUN if [ "${XDEBUG_ENABLED}" = "true" ]; then \
     docker-php-ext-enable xdebug && \
     echo "xdebug.mode=${XDEBUG_MODE}" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
@@ -53,7 +45,7 @@ RUN if [ "${XDEBUG_ENABLED}" = "true" ]; then \
     echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; \
 fi
 
-# If the group already exists, use it; otherwise, create the 'www' group
+# Reuse the group when the GID already exists on the base image
 RUN if getent group ${GID}; then \
       useradd -m -u ${UID} -g ${GID} -s /bin/bash www; \
     else \
@@ -63,10 +55,9 @@ RUN if getent group ${GID}; then \
     usermod -aG sudo www && \
     echo 'www ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-# Switch to the non-root user to install NVM and Node.js
+# NVM installs into $HOME, so it must run as the target user
 USER www
 
-# Install NVM (Node Version Manager) as the www user
 RUN export NVM_DIR="$HOME/.nvm" && \
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash && \
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
@@ -74,16 +65,14 @@ RUN export NVM_DIR="$HOME/.nvm" && \
     nvm alias default ${NODE_VERSION} && \
     nvm use default
 
-# Ensure NVM is available for all future shells
+# Make NVM available to `docker compose exec` shells
 RUN echo 'export NVM_DIR="$HOME/.nvm"' >> /home/www/.bashrc && \
     echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/www/.bashrc && \
     echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> /home/www/.bashrc
 
-# Set the working directory
 WORKDIR /var/www
 
-# Override the entrypoint to avoid the default php entrypoint
+# Clears the base image's php entrypoint so the container is a plain shell
 ENTRYPOINT []
 
-# Default command to keep the container running
 CMD ["bash"]
