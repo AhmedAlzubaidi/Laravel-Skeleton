@@ -8,6 +8,9 @@ ARG GID=1000
 ARG NODE_VERSION=22.0.0
 
 # Install system dependencies and build libraries
+# opcache is deliberately absent from the extension list: php:8.5 compiles OPcache
+# statically into the binary, so building it shared produces no module and fails
+# the whole RUN with "cp: cannot stat 'modules/*'".
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     unzip \
@@ -22,7 +25,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pdo_mysql \
     pdo_pgsql \
     pgsql \
-    opcache \
     intl \
     zip \
     bcmath \
