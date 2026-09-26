@@ -447,16 +447,16 @@ This project sets `"minimum-release-age": 7`, so any release younger than seven 
 ### **Everyday Use**
 ```bash
 # Where do we stand? A non-zero exit means a package nobody has read.
-./vendor/bin/vet
+composer vet
 
 # Read every change of one package
-./vendor/bin/vet vendor/name
+composer vet vendor/name
 
 # Read every change of every package
-./vendor/bin/vet -v
+composer vet -- -v
 
 # Clear every entry, keep the settings, re-record what vendor/ holds today
-./vendor/bin/vet --fresh
+composer vet -- --fresh
 ```
 
 Run in a terminal, vet asks which packages you trust, and can hand the diff to your coding agent (Claude Code, Codex, Gemini or opencode) to read first — it reports `PASS` or `FAIL` per package, and you decide. The Composer plugin itself never prompts.
