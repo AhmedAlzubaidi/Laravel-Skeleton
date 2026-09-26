@@ -59,6 +59,9 @@ composer lint
 # Refactor code
 composer refactor
 
+# Audit dependencies against the vet.json trust file
+./vendor/bin/vet
+
 # Start development server
 php artisan serve
 # To Access Filament admin panel
@@ -259,6 +262,9 @@ final class UserDto extends BaseData
 - [`rector/rector`](https://github.com/rectorphp/rector) – Automated code refactoring
 - [`laravel/boost`](https://github.com/laravel/boost) – Laravel-focused MCP server for augmenting your AI powered local development experience.
 
+### **Dependency Security**
+- [`laravel/vet`](https://github.com/laravel/vet) – Reviews and records the code every `composer update` writes into `vendor/`
+
 ### **Testing & Quality**
 - [`pestphp/pest`](https://pestphp.com/) – Modern testing framework
 - [`larastan/larastan`](https://github.com/larastan/larastan) – Static analysis for Laravel
@@ -422,6 +428,40 @@ class UserPolicy
     public function delete(): bool { return false; }
 }
 ```
+
+</details>
+
+<details>
+<summary><strong>🛡️ Dependency Auditing</strong></summary>
+
+[`laravel/vet`](https://github.com/laravel/vet) runs as a Composer plugin on every install and update. It shows you the code a package is about to write into `vendor/` **before** Composer lands it, and records what you trusted in `vet.json`.
+
+> **Note:** Vet is in beta. Its behaviour may change before the first stable release.
+
+### **The Trust File**
+`vet.json` is committed, and holds one entry per package — the version that was read, and a hash of its files. It is generated, so never hand-edit it. When a package ships the same version with different bytes, vet asks you to read the difference.
+
+### **Minimum Release Age**
+This project sets `"minimum-release-age": 7`, so any release younger than seven days is held back — even one you already trust. That gives a compromised release time to be spotted and pulled before it ever reaches `vendor/`. Vet exempts itself; add entries under `minimum-release-age-exclude` for a package that needs to skip the wait.
+
+### **Everyday Use**
+```bash
+# Where do we stand? A non-zero exit means a package nobody has read.
+./vendor/bin/vet
+
+# Read every change of one package
+./vendor/bin/vet vendor/name
+
+# Read every change of every package
+./vendor/bin/vet -v
+
+# Clear every entry, keep the settings, re-record what vendor/ holds today
+./vendor/bin/vet --fresh
+```
+
+Run in a terminal, vet asks which packages you trust, and can hand the diff to your coding agent (Claude Code, Codex, Gemini or opencode) to read first — it reports `PASS` or `FAIL` per package, and you decide. The Composer plugin itself never prompts.
+
+After changing dependencies, commit the updated `vet.json` alongside `composer.lock`.
 
 </details>
 
