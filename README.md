@@ -60,7 +60,7 @@ composer lint
 composer refactor
 
 # Audit dependencies against the vet.json trust file
-./vendor/bin/vet
+composer vet
 
 # Start development server
 php artisan serve

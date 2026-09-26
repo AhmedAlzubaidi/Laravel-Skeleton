@@ -69,6 +69,10 @@
             "npm run lint"
         ],
         "refactor": "rector",
+        "vet": [
+            "Composer\\Config::disableProcessTimeout",
+            "vet"
+        ],
         "test:coverage": "pest --coverage-html coverage-report",
         "test:type-coverage": "pest --type-coverage --min=100",
         "test:lint": [
