@@ -25,6 +25,7 @@
         "laravel/pail": "^1.2.7",
         "laravel/pint": "^1.30.5",
         "laravel/sail": "^1.67",
+        "laravel/vet": "^0.2.0",
         "mockery/mockery": "^1.6.15",
         "nunomaduro/collision": "^8.9.5",
         "pestphp/pest": "^5.1.3",
@@ -98,7 +99,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "laravel/vet": true
         }
     },
     "minimum-stability": "stable",
