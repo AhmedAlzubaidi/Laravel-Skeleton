@@ -1,6 +1,16 @@
 <?php
 
 declare(strict_types=1);
+use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
+use Spatie\TypeScriptTransformer\Collectors\EnumCollector;
+use Spatie\TypeScriptTransformer\Collectors\DefaultCollector;
+use Spatie\TypeScriptTransformer\Transformers\EnumTransformer;
+use Spatie\TypeScriptTransformer\Writers\TypeDefinitionWriter;
+use Spatie\LaravelTypeScriptTransformer\Transformers\DtoTransformer;
+use Spatie\TypeScriptTransformer\Transformers\SpatieEnumTransformer;
+use Spatie\LaravelTypeScriptTransformer\Transformers\SpatieStateTransformer;
+use Spatie\LaravelData\Support\TypeScriptTransformer\DataTypeScriptTransformer;
 
 return [
     /*
@@ -19,8 +29,8 @@ return [
      */
 
     'collectors' => [
-        Spatie\TypeScriptTransformer\Collectors\DefaultCollector::class,
-        Spatie\TypeScriptTransformer\Collectors\EnumCollector::class,
+        DefaultCollector::class,
+        EnumCollector::class,
     ],
 
     /*
@@ -29,11 +39,11 @@ return [
      */
 
     'transformers' => [
-        Spatie\LaravelTypeScriptTransformer\Transformers\SpatieStateTransformer::class,
-        Spatie\TypeScriptTransformer\Transformers\EnumTransformer::class,
-        Spatie\TypeScriptTransformer\Transformers\SpatieEnumTransformer::class,
-        Spatie\LaravelData\Support\TypeScriptTransformer\DataTypeScriptTransformer::class,
-        Spatie\LaravelTypeScriptTransformer\Transformers\DtoTransformer::class,
+        SpatieStateTransformer::class,
+        EnumTransformer::class,
+        SpatieEnumTransformer::class,
+        DataTypeScriptTransformer::class,
+        DtoTransformer::class,
     ],
 
     /*
@@ -45,8 +55,8 @@ return [
     'default_type_replacements' => [
         // DateTime::class => 'string',
         DateTimeImmutable::class => 'string',
-        Carbon\CarbonInterface::class => 'string',
-        Carbon\CarbonImmutable::class => 'string',
+        CarbonInterface::class => 'string',
+        CarbonImmutable::class => 'string',
         Carbon\Carbon::class => 'string',
     ],
 
@@ -62,7 +72,7 @@ return [
      * But you can also use the `ModuleWriter` or implement your own.
      */
 
-    'writer' => Spatie\TypeScriptTransformer\Writers\TypeDefinitionWriter::class,
+    'writer' => TypeDefinitionWriter::class,
 
     /*
      * The generated TypeScript file can be formatted. We ship a Prettier formatter

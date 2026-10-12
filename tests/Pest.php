@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use Tests\TestCase;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,17 +20,17 @@ declare(strict_types=1);
 */
 
 // Feature tests
-pest()->extend(Tests\TestCase::class)
+pest()->extend(TestCase::class)
     ->group('feature')
     ->in('Feature');
 
 // Unit tests
-pest()->extend(Tests\TestCase::class)
+pest()->extend(TestCase::class)
     ->group('unit')
     ->in('Unit');
 
 // Browser tests (if you have browser testing setup)
-pest()->extend(Tests\TestCase::class)
+pest()->extend(TestCase::class)
     ->group('browser')
     ->in('Browser');
 

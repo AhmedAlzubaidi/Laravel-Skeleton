@@ -2,6 +2,7 @@
     "preset": "laravel",
     "notPath": [
         "tests/TestCase.php",
+        "bootstrap/providers.php",
         "app/Foundation/BaseData.php",
         "app/Filament",
         "config"
@@ -13,7 +14,9 @@
         "declare_strict_types": true,
         "lowercase_keywords": true,
         "lowercase_static_reference": true,
-        "fully_qualified_strict_types": true,
+        "fully_qualified_strict_types": {
+            "import_symbols": true
+        },
         "global_namespace_import": {
             "import_classes": true,
             "import_constants": true,

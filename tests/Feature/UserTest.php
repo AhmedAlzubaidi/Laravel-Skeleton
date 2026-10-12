@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 use Filament\Panel;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Database\Seeders\DatabaseSeeder;
+use Illuminate\Support\Facades\Hash;
+use Filament\Models\Contracts\HasName;
+use Filament\Models\Contracts\FilamentUser;
+use Laravel\Passport\Contracts\OAuthenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -268,14 +273,14 @@ describe('User Model', function () {
         it('casts email_verified_at to datetime', function () {
             $user = User::factory()->create(['email_verified_at' => '2023-01-01 12:00:00']);
 
-            expect($user->email_verified_at)->toBeInstanceOf(Carbon\CarbonImmutable::class);
+            expect($user->email_verified_at)->toBeInstanceOf(CarbonImmutable::class);
         });
 
         it('hashes password automatically', function () {
             $user = User::factory()->create(['password' => 'plaintext']);
 
             expect($user->password)->not->toBe('plaintext');
-            expect(Illuminate\Support\Facades\Hash::check('plaintext', $user->password))->toBeTrue();
+            expect(Hash::check('plaintext', $user->password))->toBeTrue();
         });
     });
 
@@ -283,19 +288,19 @@ describe('User Model', function () {
         it('implements FilamentUser interface', function () {
             $user = new User();
 
-            expect($user)->toBeInstanceOf(Filament\Models\Contracts\FilamentUser::class);
+            expect($user)->toBeInstanceOf(FilamentUser::class);
         });
 
         it('implements HasName interface', function () {
             $user = new User();
 
-            expect($user)->toBeInstanceOf(Filament\Models\Contracts\HasName::class);
+            expect($user)->toBeInstanceOf(HasName::class);
         });
 
         it('implements OAuthenticatable interface', function () {
             $user = new User();
 
-            expect($user)->toBeInstanceOf(Laravel\Passport\Contracts\OAuthenticatable::class);
+            expect($user)->toBeInstanceOf(OAuthenticatable::class);
         });
 
         it('uses HasApiTokens trait', function () {
