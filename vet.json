@@ -65,44 +65,44 @@
             "hash": "tree-v2:7621e009898aea85dfa2ad91d25a3441db9ef5bf90a1b55e9b8396b3a43830f9"
         },
         "filament/actions": {
-            "version": "v5.7.8",
-            "hash": "tree-v2:498719ffff9f580cdc285256ad4bf66c48961e1a477c210700566db6d19daca3"
+            "version": "v5.8.2",
+            "hash": "tree-v2:e68a719a10b0a901e7921b937259aeb64cc7298ef5847d15d9140b172dfe49e8"
         },
         "filament/filament": {
-            "version": "v5.7.8",
-            "hash": "tree-v2:fe1c3751b69aa9bd6a1a96581344594656a0be094d87bd015376fea584b053ec"
+            "version": "v5.8.2",
+            "hash": "tree-v2:a0e2af751282930d2034804324f39aff16c46819f3e210388238cb34bbe76cd8"
         },
         "filament/forms": {
-            "version": "v5.7.8",
-            "hash": "tree-v2:6255f5c7cfeddcf2ad2b0809b7977bd8c12e2ac17009c2f0e48fac9a63e23c3e"
+            "version": "v5.8.2",
+            "hash": "tree-v2:dbc1dfbd4fd2c72dc5e655c409c8ba99ea53382849323869af4315fc76e5d3c3"
         },
         "filament/infolists": {
-            "version": "v5.7.8",
-            "hash": "tree-v2:823b937c1ed7c1584643899ab5c56e999e6a8508a3d68ae75ea13a527db89cbd"
+            "version": "v5.8.2",
+            "hash": "tree-v2:99d20e915391cd41807314badf0ad9a3d4def4781d0747c06fbcde3ae09dce30"
         },
         "filament/notifications": {
-            "version": "v5.7.8",
-            "hash": "tree-v2:fd8d3a50e287667eceaf18ae447335df7bc9d7fb698e7d867c9c60d25a8a58ef"
+            "version": "v5.8.2",
+            "hash": "tree-v2:f8574c3c9fd298beab2e600c4b791f3ea75b85f106ea83da63b1eff987cefc99"
         },
         "filament/query-builder": {
-            "version": "v5.7.8",
-            "hash": "tree-v2:187c5ebe1dca95c957feda5246df8290a3c20abf1ea5a7023183babff1bff8e8"
+            "version": "v5.8.2",
+            "hash": "tree-v2:8c0567b09ef94c274f75bc5d8285942a52d681f5bc03ea403ba099c37d37f64b"
         },
         "filament/schemas": {
-            "version": "v5.7.8",
-            "hash": "tree-v2:b286812ed46b2dbeb4c8cf894ec09737ba906c2833b36d2e28077d9feb3d090c"
+            "version": "v5.8.2",
+            "hash": "tree-v2:84cfb6034559b02b001ccbab08ca21cad5023f0a4ecbf00e3c45c4a575bffb33"
         },
         "filament/support": {
-            "version": "v5.7.8",
-            "hash": "tree-v2:0e5cb3cae1729c555f711d9445eed5e57e865de80775aad4cff364d20873c657"
+            "version": "v5.8.2",
+            "hash": "tree-v2:86f79afa5a969c93c1beae0d9683d87437233bf9d617eeeb5386c55846bc1af6"
         },
         "filament/tables": {
-            "version": "v5.7.8",
-            "hash": "tree-v2:7b1d8c4af59c6ab29725a6342f72a8ce02e63df732646aeb839f1d38bdce345d"
+            "version": "v5.8.2",
+            "hash": "tree-v2:8fcd88401f087c26afeb6a92e437a84dd032be345a2636a9ab04d62d14eb918d"
         },
         "filament/widgets": {
-            "version": "v5.7.8",
-            "hash": "tree-v2:138b39af08dd0a05b3eb5edcf95805f9e986651c104a0ccab24c0d15fa9350f6"
+            "version": "v5.8.2",
+            "hash": "tree-v2:f3cede6d562c8d5cc2b9f1df38afcd383d659b2c58d08366e5b7da7949c22563"
         },
         "firebase/php-jwt": {
             "version": "v7.1.0",
@@ -165,8 +165,8 @@
             "hash": "tree-v2:7374370ed18d7728465afcdcdbede894a4916ff0aea1fac63d2ae85859f74d66"
         },
         "league/commonmark": {
-            "version": "2.10.0",
-            "hash": "tree-v2:71086e809dadc7ebb87d5d7153de0eee93f23b5ce6330f00e1b91b8f356fdc32"
+            "version": "2.10.3",
+            "hash": "tree-v2:ee619e9faf2cbab26a72cb89c809211c91e772fecf8c1a3cbc5e98f8a1233db2"
         },
         "league/config": {
             "version": "v1.2.0",
