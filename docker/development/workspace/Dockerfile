@@ -1,4 +1,4 @@
-FROM php:8.5-cli
+FROM php:8.5.12-cli
 
 # Synced with the host user so bind-mounted files stay writable both ways
 ARG UID=1000

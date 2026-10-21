@@ -1,5 +1,5 @@
 # Stage 1: Build environment and Composer dependencies
-FROM php:8.5-fpm AS builder
+FROM php:8.5.12-fpm AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
@@ -35,7 +35,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 
 # Stage 2: Production environment
-FROM php:8.5-fpm AS production
+FROM php:8.5.12-fpm AS production
 
 # libfcgi-bin and procps are required by the php-fpm-healthcheck script
 RUN apt-get update && apt-get install -y --no-install-recommends \
