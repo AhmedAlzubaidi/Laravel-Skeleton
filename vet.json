@@ -65,44 +65,44 @@
             "hash": "tree-v2:7621e009898aea85dfa2ad91d25a3441db9ef5bf90a1b55e9b8396b3a43830f9"
         },
         "filament/actions": {
-            "version": "v5.8.2",
-            "hash": "tree-v2:e68a719a10b0a901e7921b937259aeb64cc7298ef5847d15d9140b172dfe49e8"
+            "version": "v5.11.2",
+            "hash": "tree-v2:cd829e52e5acfcc33f4cef23cc6178ee87bf4087fe168356322be1ca841da7a2"
         },
         "filament/filament": {
-            "version": "v5.8.2",
-            "hash": "tree-v2:a0e2af751282930d2034804324f39aff16c46819f3e210388238cb34bbe76cd8"
+            "version": "v5.11.2",
+            "hash": "tree-v2:4aa8d817d23ef898ac278ea73990d95fa84f47da01c23b4403a1bcca31f83d3f"
         },
         "filament/forms": {
-            "version": "v5.8.2",
-            "hash": "tree-v2:dbc1dfbd4fd2c72dc5e655c409c8ba99ea53382849323869af4315fc76e5d3c3"
+            "version": "v5.11.2",
+            "hash": "tree-v2:b1d476d8ec67aa396fc95b997dd5d740c3329b0f2eb863fa60bc2da2e2e18b1f"
         },
         "filament/infolists": {
-            "version": "v5.8.2",
-            "hash": "tree-v2:99d20e915391cd41807314badf0ad9a3d4def4781d0747c06fbcde3ae09dce30"
+            "version": "v5.11.2",
+            "hash": "tree-v2:6cc022a5ce2e1d51389984a5333c74d32bc0c17bc18ba81b422ff07418f0a2e0"
         },
         "filament/notifications": {
-            "version": "v5.8.2",
-            "hash": "tree-v2:f8574c3c9fd298beab2e600c4b791f3ea75b85f106ea83da63b1eff987cefc99"
+            "version": "v5.11.2",
+            "hash": "tree-v2:d28b12165a9b283bb859bbb006d6600ccac0e35b4da0ad7db30663cce994fcef"
         },
         "filament/query-builder": {
-            "version": "v5.8.2",
-            "hash": "tree-v2:8c0567b09ef94c274f75bc5d8285942a52d681f5bc03ea403ba099c37d37f64b"
+            "version": "v5.11.2",
+            "hash": "tree-v2:629eb284d1cc68ed173037f93db2ff16e4975ec851001fa4a9f92dc84e481937"
         },
         "filament/schemas": {
-            "version": "v5.8.2",
-            "hash": "tree-v2:84cfb6034559b02b001ccbab08ca21cad5023f0a4ecbf00e3c45c4a575bffb33"
+            "version": "v5.11.2",
+            "hash": "tree-v2:6898ab2d4ddd91bde800a7cb871e23ce1e341bd88ec925623584f83a34649fbd"
         },
         "filament/support": {
-            "version": "v5.8.2",
-            "hash": "tree-v2:86f79afa5a969c93c1beae0d9683d87437233bf9d617eeeb5386c55846bc1af6"
+            "version": "v5.11.2",
+            "hash": "tree-v2:0b5c4dea9588cb5ff8d250d54b8e6608cbd863d16412ea166ac12da6970d500c"
         },
         "filament/tables": {
-            "version": "v5.8.2",
-            "hash": "tree-v2:8fcd88401f087c26afeb6a92e437a84dd032be345a2636a9ab04d62d14eb918d"
+            "version": "v5.11.2",
+            "hash": "tree-v2:d5de738efbebc086a3883c3714cadb6252cea35c0fdad6e79a23e74d33557c9d"
         },
         "filament/widgets": {
-            "version": "v5.8.2",
-            "hash": "tree-v2:f3cede6d562c8d5cc2b9f1df38afcd383d659b2c58d08366e5b7da7949c22563"
+            "version": "v5.11.2",
+            "hash": "tree-v2:7584106aa0647924689595bfb9bbd23d6cd80459bdb0380f71d2cb2389128ab3"
         },
         "firebase/php-jwt": {
             "version": "v7.1.0",
@@ -141,16 +141,16 @@
             "hash": "tree-v2:f38624f9035bac32f38d7c30a5692a339f26a7f4eae9045ef5697ccb23665354"
         },
         "laravel/framework": {
-            "version": "v13.30.1",
-            "hash": "tree-v2:250dce8a1da449e2e863994da1d09065fa2c259c812eb6c926315ea7869438e6"
+            "version": "v13.42.0",
+            "hash": "tree-v2:e83d2ceff9e16e7a221314e401371505fbe3c0bfbf56f0af76230eb7846852fd"
         },
         "laravel/passport": {
             "version": "v13.8.0",
             "hash": "tree-v2:f4c6ccba466d86d94d4d43a5073a517233ae6e48e54becba8de589af2db849f1"
         },
         "laravel/prompts": {
-            "version": "v0.3.24",
-            "hash": "tree-v2:af7fccf97985aef4aad89febec94cee2dce8d76a74b961c1d03a680df881ef6e"
+            "version": "v0.3.27",
+            "hash": "tree-v2:232313d19ffc3c32af1ed4f6657b57789ff194520d875263331f8ea0b2d306b1"
         },
         "laravel/serializable-closure": {
             "version": "v2.0.16",
@@ -209,8 +209,8 @@
             "hash": "tree-v2:227c217ed67b9cd48cc589867bf18379e95858e068724b8fbef94713311b024e"
         },
         "livewire/livewire": {
-            "version": "v4.4.3",
-            "hash": "tree-v2:d2515c29f328869833fa30d76864b9352ded315ee71ff4bc218623746bc2ce94"
+            "version": "v4.4.8",
+            "hash": "tree-v2:ba227b9c0fa25ee3d5ea715216a41bf70d845016dbf25a3cb2cde91e7e4b3014"
         },
         "monolog/monolog": {
             "version": "3.11.0",
@@ -273,8 +273,8 @@
             "hash": "tree-v2:88bf58174c3d5e79cc8ba99f6a072fc4c26e4aea72ad093b5d5a43d3d46ccea4"
         },
         "phpseclib/phpseclib": {
-            "version": "4.0.1",
-            "hash": "tree-v2:5f5e0a879d0145529b4c28c3d2a560576abac201af0872bb99f302b6fdee246c"
+            "version": "4.0.3",
+            "hash": "tree-v2:73631206054d83c88eb459f2f0a09ebae13c45435af00a9af3678ad5647c9cc8"
         },
         "phpstan/phpdoc-parser": {
             "version": "2.3.5",
@@ -433,24 +433,24 @@
             "hash": "tree-v2:2b19e0272afc430e5b2dfa1cd9612fd6d2904447e7c3b5254f0d3d9f7942f5a2"
         },
         "symfony/html-sanitizer": {
-            "version": "v8.1.6",
-            "hash": "tree-v2:e6debebcc6629ec05c55224dd6cb758f8dde46f8948ef8880dd1b9fbd50dd524"
+            "version": "v8.1.11",
+            "hash": "tree-v2:a745b9742685d9b2f5e067151183db2e8c42c3f35659a8cec451233b912adcf8"
         },
         "symfony/http-foundation": {
-            "version": "v8.1.6",
-            "hash": "tree-v2:d71061ac84c173c376b5b48fd1cb756e863b570d1183a971ab54078907aaa593"
+            "version": "v8.1.11",
+            "hash": "tree-v2:eb7e195ea55862fe686348a0a2db3b9e0927a4dd2cd9589c567d2a3712a0418c"
         },
         "symfony/http-kernel": {
-            "version": "v8.1.6",
-            "hash": "tree-v2:cd65ca53ad2f03f8f1dac60bf02ef42b0295bddab9103f90b3bf05b4f245b40d"
+            "version": "v8.1.11",
+            "hash": "tree-v2:f711f3963c9952dc91d9c8a07058f4a084ccb9a8b55c0165adb14153d5ea03e9"
         },
         "symfony/mailer": {
             "version": "v8.1.5",
             "hash": "tree-v2:47b218924ea36c54b7374575b1400a85233b9ab539d2a780d301f1d54a556fa3"
         },
         "symfony/mime": {
-            "version": "v8.1.6",
-            "hash": "tree-v2:01ba97c3b98c2b28978c3239209099e14e16b707298e84a74d232d5dbc95f81c"
+            "version": "v8.1.10",
+            "hash": "tree-v2:f334f867543b396c4c81a227ac4d55634c75345d7b93eeb51971e13888a7f32d"
         },
         "symfony/polyfill-ctype": {
             "version": "v1.37.0",
@@ -505,8 +505,8 @@
             "hash": "tree-v2:5436ca31402054df5b2f0112afa655297032380d0db45baa946bad4253a8a324"
         },
         "symfony/routing": {
-            "version": "v8.1.6",
-            "hash": "tree-v2:aab8d7b78a17ab2c96422f53a2e068a40085ae04bacb134c5323c0799a3d8430"
+            "version": "v8.1.11",
+            "hash": "tree-v2:22d80c8e8728c2b6d65c743b252b3ab3293b7555c3d1687c7ee63cbe6695c10a"
         },
         "symfony/service-contracts": {
             "version": "v3.7.3",
@@ -783,8 +783,8 @@
             "hash": "tree-v2:26d964435c381c94abd5dbadf497d7888b5a811f0693b66aa7976a3d01c545ba"
         },
         "symfony/yaml": {
-            "version": "v8.1.6",
-            "hash": "tree-v2:0743e95f1a1ad604e188432858c1b9406537e1a254b484e3e63487e52805624a"
+            "version": "v8.1.11",
+            "hash": "tree-v2:f5ac548d42a52421e9df6f63c180f794e91059eb2cfccc44c1bb3bd3c60097d4"
         },
         "ta-tikoma/phpunit-architecture-test": {
             "version": "0.8.7",

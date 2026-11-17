@@ -3,9 +3,11 @@ FROM php:8.5.12-cli
 # Synced with the host user so bind-mounted files stay writable both ways
 ARG UID=1000
 ARG GID=1000
-ARG NODE_VERSION=22.0.0
+ARG NODE_VERSION=22
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     curl \
     unzip \
     libpq-dev \
@@ -25,7 +27,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     soap \
     && pecl install redis xdebug \
     && docker-php-ext-enable redis xdebug\
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ARG XDEBUG_ENABLED
@@ -64,6 +65,8 @@ RUN export NVM_DIR="$HOME/.nvm" && \
     nvm install ${NODE_VERSION} && \
     nvm alias default ${NODE_VERSION} && \
     nvm use default
+
+RUN bash -c '. "$HOME/.nvm/nvm.sh" && npm install --global npm@12.2.2 --ignore-scripts && npm cache clean --force'
 
 # Make NVM available to `docker compose exec` shells
 RUN echo 'export NVM_DIR="$HOME/.nvm"' >> /home/www/.bashrc && \

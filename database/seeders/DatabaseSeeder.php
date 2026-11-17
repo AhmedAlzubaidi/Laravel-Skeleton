@@ -15,10 +15,13 @@ final class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            RoleSeeder::class,
-            UserSeeder::class,
-        ]);
+        $this->call(RoleSeeder::class);
+
+        if (! app()->environment(['local', 'testing'])) {
+            return;
+        }
+
+        $this->call(UserSeeder::class);
 
         $adminUser = User::factory()->create([
             'username' => 'admin',

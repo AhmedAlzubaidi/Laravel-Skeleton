@@ -1,6 +1,8 @@
 services:
   web:
-    image: nginx:latest # Using the default Nginx image with custom configuration.
+    build:
+      context: .
+      dockerfile: ./docker/development/nginx/Dockerfile
     volumes:
       # Mount the application code for live updates
       - ./:/var/www
@@ -8,7 +10,7 @@ services:
       - ./docker/development/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       # Map port 80 inside the container to the port specified by 'NGINX_PORT' on the host machine
-      - "80:80"
+      - "127.0.0.1:${NGINX_PORT:-80}:80"
     environment:
       - NGINX_HOST=localhost
     networks:
@@ -72,7 +74,7 @@ services:
         XDEBUG_LOG: /dev/stdout
         XDEBUG_LOG_LEVEL: 0
     ports:
-      - '${VITE_PORT:-5173}:5173'
+      - '127.0.0.1:${VITE_PORT:-5173}:5173'
     tty: true  # Enables an interactive terminal
     stdin_open: true  # Keeps standard input open for 'docker exec'
     env_file:
@@ -95,9 +97,11 @@ services:
       - laravel-development
 
   postgres:
-    image: postgres:18
+    build:
+      context: .
+      dockerfile: ./docker/production/postgres/Dockerfile
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
     environment:
       - POSTGRES_DB=app
       - POSTGRES_USER=laravel
@@ -110,7 +114,9 @@ services:
       - laravel-development
 
   redis:
-    image: redis:alpine
+    build:
+      context: .
+      dockerfile: ./docker/production/redis/Dockerfile
     networks:
       - laravel-development
 

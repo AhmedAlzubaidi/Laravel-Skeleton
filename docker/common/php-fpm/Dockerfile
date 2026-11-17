@@ -1,7 +1,7 @@
 # Stage 1: Build environment and Composer dependencies
 FROM php:8.5.12-fpm AS builder
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     curl \
     unzip \
     libpq-dev \
@@ -26,19 +26,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /var/www
 
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
 # Copied before `composer install` because post-autoload-dump runs artisan,
 # which needs the full source present.
 COPY . /var/www
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer install --no-dev --optimize-autoloader --no-interaction --no-progress --prefer-dist
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress --prefer-dist
 
 
 # Stage 2: Production environment
 FROM php:8.5.12-fpm AS production
 
 # libfcgi-bin and procps are required by the php-fpm-healthcheck script
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     libpq-dev \
     libicu-dev \
     libzip-dev \
@@ -51,8 +52,7 @@ RUN curl -o /usr/local/bin/php-fpm-healthcheck \
     && chmod +x /usr/local/bin/php-fpm-healthcheck
 
 COPY ./docker/production/php-fpm/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod 755 /usr/local/bin/entrypoint.sh && \
-    chown www-data:www-data /usr/local/bin/entrypoint.sh
+RUN chmod 755 /usr/local/bin/entrypoint.sh
 
 # Seed copy; the entrypoint restores it into the storage volume on first boot
 COPY ./storage /var/www/storage-init
@@ -61,7 +61,8 @@ COPY --from=builder /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions
 COPY --from=builder /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 COPY --from=builder /usr/local/bin/docker-php-ext-* /usr/local/bin/
 
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && printf 'expose_php=Off\ncgi.fix_pathinfo=0\n' > "$PHP_INI_DIR/conf.d/security.ini"
 
 # Exposes the FPM status page that php-fpm-healthcheck polls. The anchor matters:
 # the comment above the section header also contains "[www]", and an unanchored match
@@ -74,7 +75,7 @@ COPY --from=builder /var/www /var/www
 
 WORKDIR /var/www
 
-RUN chown -R www-data:www-data /var/www
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 USER www-data
 
@@ -129,8 +130,7 @@ RUN sed -i "s/user = www-data/user = www/g" /usr/local/etc/php-fpm.d/www.conf &&
 WORKDIR /var/www
 
 COPY ./docker/development/php-fpm/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod 755 /usr/local/bin/entrypoint.sh && \
-    chown www-data:www-data /usr/local/bin/entrypoint.sh
+RUN chmod 755 /usr/local/bin/entrypoint.sh
 
 USER www-data
 

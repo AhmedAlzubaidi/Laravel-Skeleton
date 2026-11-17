@@ -38,6 +38,16 @@ services:
       - laravel-storage-production:/var/www/storage  # Mount the storage volume
     env_file:
       - .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${POSTGRES_DATABASE:-app}
+      DB_USERNAME: ${POSTGRES_USERNAME:-laravel}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD to a strong password}
+      REDIS_HOST: redis
     networks:
       - laravel-production
     healthcheck:
@@ -53,15 +63,15 @@ services:
         condition: service_healthy
 
   postgres:
-    image: postgres:18
+    build:
+      context: .
+      dockerfile: ./docker/production/postgres/Dockerfile
     restart: unless-stopped
     user: postgres
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
     environment:
       - POSTGRES_DB=${POSTGRES_DATABASE:-app}
       - POSTGRES_USER=${POSTGRES_USERNAME:-laravel}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-secret}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD to a strong password}
     volumes:
       # postgres:18 moved PGDATA to /var/lib/postgresql/18/docker and the image VOLUME
       # to /var/lib/postgresql, so the mount targets the parent, not .../data.
@@ -81,7 +91,9 @@ services:
       retries: 5
 
   redis:
-    image: redis:alpine
+    build:
+      context: .
+      dockerfile: ./docker/production/redis/Dockerfile
     restart: unless-stopped  # Automatically restart unless the service is explicitly stopped
     networks:
       - laravel-production

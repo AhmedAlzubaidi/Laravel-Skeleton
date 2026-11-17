@@ -8,8 +8,6 @@ if [ ! "$(ls -A /var/www/storage)" ]; then
   chown -R www-data:www-data /var/www/storage
 fi
 
-rm -rf /var/www/storage-init
-
 php artisan migrate --force
 
 php artisan config:cache

@@ -5,8 +5,7 @@
 COMPOSE_DEV = docker compose -f compose.dev.yaml
 COMPOSE_PROD = docker compose -f compose.prod.yaml
 SHELL := /bin/bash
-NODE_PATH = /home/www/.nvm/versions/node/v22.0.0/bin
-NODE_CMD = bash -c export PATH=$(NODE_PATH):\$$PATH && npm
+NODE_CMD = bash -c '. /home/www/.nvm/nvm.sh && npm "$$@"' --
 WORKSPACE = $(COMPOSE_DEV) exec workspace
 ARTISAN = $(WORKSPACE) php artisan
 COMPOSER = $(WORKSPACE) composer
@@ -298,7 +297,7 @@ ports: ## Show exposed ports
 info: ## Show project information
 	@echo -e "$(CYAN)Project Information:$(RESET)"
 	@echo "  PHP Version: 8.4"
-	@echo "  Node Version: 22.0.0"
+	@echo "  Node Version: 22 (maintained release)"
 	@echo "  Database: PostgreSQL 16"
 	@echo "  Cache: Redis"
 	@echo "  Web Server: Nginx"

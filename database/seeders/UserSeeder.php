@@ -14,6 +14,10 @@ final class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        if (! app()->environment(['local', 'testing'])) {
+            return;
+        }
+
         User::factory(10)->create();
     }
 }
