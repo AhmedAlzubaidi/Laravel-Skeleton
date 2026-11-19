@@ -12,7 +12,7 @@ RUN npm install --global npm@12.2.2 --ignore-scripts \
     && npm ci --ignore-scripts && npm run build
 
 # Stage 2: Nginx production image
-FROM nginx:1.30.6-alpine
+FROM nginx:1.30.7-alpine
 
 RUN apk upgrade --no-cache
 
