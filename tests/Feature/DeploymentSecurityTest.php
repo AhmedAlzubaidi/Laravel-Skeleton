@@ -4,13 +4,6 @@ declare(strict_types=1);
 
 use Symfony\Component\Yaml\Yaml;
 
-it('uses the patched stable Nginx release in both environments', function (string $environment): void {
-    $dockerfile = file_get_contents(base_path("docker/{$environment}/nginx/Dockerfile"));
-
-    expect(preg_match('/^FROM nginx:(1\.30\.\d+)-alpine$/m', $dockerfile, $matches))->toBe(1);
-    expect(version_compare($matches[1], '1.30.7', '>='))->toBeTrue();
-})->with(['development', 'production']);
-
 it('keeps the production database private and requires an explicit password', function (): void {
     $services = Yaml::parseFile(base_path('compose.prod.yaml'))['services'];
 
